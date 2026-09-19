@@ -8,7 +8,7 @@ const ai = new GoogleGenAI({
 const getOpenAIAPIResponse = async (messages) => {
     try {
         const response = await ai.models.generateContent({
-            model: "gemini-3.8-flash",
+            model: "gemini-3.6-flash",
             contents: messages.map((msg) => ({
                 role: msg.role === "assistant" ? "model" : "user",
                 parts: [{ text: msg.content }]
