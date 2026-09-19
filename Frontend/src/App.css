@@ -1,8 +1,6 @@
 * {
     box-sizing: border-box;
 
-    color: #ececec;
-
     font-family:
         Roboto,
         "Open Sans",
@@ -19,20 +17,11 @@ body,
     width: 100%;
     height: 100%;
 
-    background: #212121;
-}
-
-body {
     overflow: hidden;
 }
 
-button,
-input {
-    font-family: inherit;
-}
-
-button {
-    color: inherit;
+body {
+    background: #212121;
 }
 
 .app {
@@ -43,43 +32,31 @@ button {
 
     background: #212121;
 
-    overflow: hidden;
+    color: #ececec;
+
+    transition:
+        background-color 0.25s ease,
+        color 0.25s ease;
 }
 
 
 /* =========================
-   DESKTOP
+   DARK THEME
 ========================= */
 
-@media (min-width: 769px) {
-    .app {
-        flex-direction: row;
-    }
+.darkTheme {
+    background: #212121;
+
+    color: #ececec;
 }
 
 
 /* =========================
-   TABLET
+   LIGHT THEME
 ========================= */
 
-@media (max-width: 768px) {
-    .app {
-        position: relative;
+.lightTheme {
+    background: #ffffff;
 
-        width: 100%;
-        height: 100vh;
-
-        overflow: hidden;
-    }
-}
-
-
-/* =========================
-   MOBILE
-========================= */
-
-@media (max-width: 500px) {
-    .app {
-        min-width: 0;
-    }
+    color: #202020;
 }

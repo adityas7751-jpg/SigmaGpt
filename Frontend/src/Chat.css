@@ -333,3 +333,58 @@
         font-size: 28px;
     }
 }
+/* =========================
+   LIGHT THEME CHAT
+========================= */
+
+.lightTheme .chats {
+    color: #202020;
+}
+
+
+.lightTheme .userMessage {
+    background-color: #eeeeee;
+
+    color: #202020;
+}
+
+
+.lightTheme .gptDiv {
+    color: #202020;
+}
+
+
+.lightTheme .gptDiv p,
+.lightTheme .gptDiv li,
+.lightTheme .gptDiv h1,
+.lightTheme .gptDiv h2,
+.lightTheme .gptDiv h3,
+.lightTheme .gptDiv h4,
+.lightTheme .gptDiv strong {
+    color: #202020;
+}
+
+
+.lightTheme .gptDiv code {
+    color: #202020;
+}
+
+
+.lightTheme pre {
+    background-color: #f1f1f1;
+
+    border: 1px solid #dddddd;
+}
+/* =========================
+   LIGHT THEME START SCREEN
+========================= */
+
+.lightTheme h1 {
+    color: #202020 !important;
+    opacity: 1 !important;
+}
+
+.lightTheme .chats h1 {
+    color: #202020 !important;
+    opacity: 1 !important;
+}
