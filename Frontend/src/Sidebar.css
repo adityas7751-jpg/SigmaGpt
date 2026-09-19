@@ -1,87 +1,217 @@
 .sidebar {
-    background-color: #171717;
+    background: #111111;
     color: #b4b4b4;
     height: 100vh;
-    width: 320px;
+    width: 280px;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    border-right: 1px solid #292929;
+    flex-shrink: 0;
 }
 
-
-button {
+/* New Chat Button */
+.sidebar > button {
+    width: calc(100% - 24px);
+    height: 52px;
+    margin: 12px;
+    padding: 0 14px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin: 10px;
-    padding: 10px;
-    border-radius: 5px;
-    background-color: transparent;
-    border: solid 0.5px rgba(255, 255, 255, 0.5);
+
+    background: #1a1a1a;
+    border: 1px solid #303030;
+    border-radius: 10px;
+
+    color: #f5f5f5;
     cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease;
 }
 
+.sidebar > button:hover {
+    background: #222222;
+    border-color: #444444;
+}
+
+.sidebar > button:active {
+    transform: scale(0.98);
+}
+
+/* Logo */
 .logo {
-    height: 25px;
-    width: 25px;
-    background-color: #fff;
-    border-radius: 50%;
+    height: 28px;
+    width: 28px;
+    background: #ffffff;
+    border-radius: 8px;
     object-fit: cover;
 }
 
-button span {
-    font-size: 20px;
+/* New chat icon */
+.sidebar > button span {
+    width: 32px;
+    height: 32px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 16px;
+    color: #d4d4d4;
+
+    border-radius: 7px;
+
+    transition: background 0.2s ease;
 }
 
-button:hover {
-    background-color: rgba(180, 180, 180, 0.05);
+.sidebar > button:hover span {
+    background: #2d2d2d;
 }
 
+/* History container */
 .history {
-    margin: 10px;
-    padding: 10px;
-    height: 100%;
+    margin: 4px 8px;
+    padding: 0 4px;
+    flex: 1;
+
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    scrollbar-width: thin;
+    scrollbar-color: #3a3a3a transparent;
 }
 
-.history li {
-    list-style-type: none;
-    cursor: pointer;
-    padding: 2px 5px;
-    margin-bottom: 0.3rem;
-    font-size: 14px;
-    border: solid 10px transparent;
-    position: relative;
+/* Chrome scrollbar */
+.history::-webkit-scrollbar {
+    width: 5px;
 }
 
-.history li:hover {
-    background-color: rgba(180, 180, 180, 0.05);
+.history::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.history::-webkit-scrollbar-thumb {
+    background: #353535;
     border-radius: 10px;
 }
 
-.sign {
-    padding: 10px;
-    margin: 10px;
+/* Chat item */
+.history li {
+    list-style: none;
+
+    min-height: 44px;
+    width: 100%;
+
+    box-sizing: border-box;
+
+    display: flex;
+    align-items: center;
+
+    padding: 0 38px 0 14px;
+    margin-bottom: 4px;
+
+    position: relative;
+
     font-size: 14px;
-    text-align: center;
-    border-top: solid 0.25px rgba(255, 255, 255, 0.5);
+    line-height: 20px;
+
+    color: #b8b8b8;
+
+    border: 1px solid transparent;
+    border-radius: 9px;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        color 0.2s ease,
+        border-color 0.2s ease;
 }
 
-.fa-trash {
+/* Chat title */
+.threadTitle {
+    display: block;
+
+    width: 100%;
+
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+/* Hover */
+.history li:hover {
+    background: #1f1f1f;
+    color: #f1f1f1;
+}
+
+/* Active chat */
+.history li.highlighted {
+    background: #242424;
+    color: #ffffff;
+    border-color: #303030;
+}
+
+/* Delete icon */
+.history .fa-trash {
     opacity: 0;
+
     position: absolute;
-    right: 0;
+    right: 12px;
+
+    font-size: 13px;
+
+    color: #888;
+
+    transition:
+        opacity 0.2s ease,
+        color 0.2s ease,
+        transform 0.2s ease;
 }
 
 .history li:hover .fa-trash {
     opacity: 1;
-    color: #fff;
 }
 
-.fa-trash:hover {
+.history .fa-trash:hover {
     color: #f87171 !important;
+    transform: scale(1.1);
 }
 
-.highlighted {
-    background-color: rgba(180, 180, 180, 0.05);
-    border-radius: 10px;
+/* Bottom section */
+.sign {
+    padding: 14px 10px;
+    margin: 8px 12px 10px;
+
+    font-size: 12px;
+    color: #777;
+
+    text-align: center;
+
+    border-top: 1px solid #292929;
+}
+
+.sign p {
+    margin: 12px 0 2px;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 240px;
+    }
+}
+
+/* Small screens */
+@media (max-width: 500px) {
+    .sidebar {
+        width: 220px;
+    }
+
+    .history li {
+        font-size: 13px;
+    }
 }
