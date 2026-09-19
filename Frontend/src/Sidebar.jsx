@@ -12,7 +12,9 @@ function Sidebar() {
         setPrompt,
         setReply,
         setCurrThreadId,
-        setPrevChats
+        setPrevChats,
+        sidebarOpen,
+        setSidebarOpen
     } = useContext(MyContext);
 
     const getAllThreads = async () => {
@@ -33,6 +35,7 @@ function Sidebar() {
             }));
 
             setAllThreads(filteredData);
+
         } catch (err) {
             console.log("Failed to load threads:", err);
         }
@@ -48,6 +51,7 @@ function Sidebar() {
         setReply(null);
         setCurrThreadId(uuidv1());
         setPrevChats([]);
+        setSidebarOpen(false);
     };
 
     const changeThread = async (newThreadId) => {
@@ -67,6 +71,8 @@ function Sidebar() {
             setNewChat(false);
             setReply(null);
             setPrompt("");
+            setSidebarOpen(false);
+
         } catch (err) {
             console.log("Failed to load chat:", err);
         }
@@ -94,13 +100,18 @@ function Sidebar() {
             if (threadId === currThreadId) {
                 createNewChat();
             }
+
         } catch (err) {
             console.log("Failed to delete thread:", err);
         }
     };
 
     return (
-        <section className="sidebar">
+        <section
+            className={`sidebar ${
+                sidebarOpen ? "sidebarOpen" : ""
+            }`}
+        >
 
             <button onClick={createNewChat}>
                 <img
@@ -115,6 +126,7 @@ function Sidebar() {
             </button>
 
             <ul className="history">
+
                 {allThreads?.map((thread) => (
                     <li
                         key={thread.threadId}
@@ -127,6 +139,7 @@ function Sidebar() {
                                 : ""
                         }
                     >
+
                         <span className="threadTitle">
                             {thread.title}
                         </span>
@@ -138,8 +151,10 @@ function Sidebar() {
                                 deleteThread(thread.threadId);
                             }}
                         ></i>
+
                     </li>
                 ))}
+
             </ul>
 
             <div className="sign">

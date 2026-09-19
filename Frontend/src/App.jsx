@@ -12,6 +12,7 @@ function App() {
     const [prevChats, setPrevChats] = useState([]);
     const [newChat, setNewChat] = useState(true);
     const [allThreads, setAllThreads] = useState([]);
+    const [sidebarOpen, setSidebarOpen] = useState(false);
 
     const providerValues = {
         prompt,
@@ -30,15 +31,30 @@ function App() {
         setPrevChats,
 
         allThreads,
-        setAllThreads
+        setAllThreads,
+
+        sidebarOpen,
+        setSidebarOpen
     };
 
     return (
         <div className="app">
+
             <MyContext.Provider value={providerValues}>
+
                 <Sidebar />
+
                 <ChatWindow />
+
+                {sidebarOpen && (
+                    <div
+                        className="sidebarOverlay"
+                        onClick={() => setSidebarOpen(false)}
+                    />
+                )}
+
             </MyContext.Provider>
+
         </div>
     );
 }

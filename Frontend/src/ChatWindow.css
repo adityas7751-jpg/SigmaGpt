@@ -448,3 +448,48 @@
         width: 175px;
     }
 }
+.mobileMenuButton {
+    display: none;
+
+    width: 38px;
+    height: 38px;
+
+    margin: 0;
+    padding: 0;
+
+    align-items: center;
+    justify-content: center;
+
+    background: transparent;
+
+    border: none;
+    border-radius: 8px;
+
+    color: #d5d5d5;
+
+    cursor: pointer;
+}
+
+.mobileMenuButton:hover {
+    background: #2b2b2b;
+}
+
+.mobileMenuButton i {
+    font-size: 17px;
+}
+
+.navbarLeft {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+@media (max-width: 768px) {
+    .mobileMenuButton {
+        display: flex;
+    }
+
+    .navbar {
+        padding: 0 10px;
+    }
+}

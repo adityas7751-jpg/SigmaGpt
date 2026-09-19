@@ -12,5 +12,7 @@ export const MyContext = createContext({
     prevChats: [],
     setPrevChats: () => {},
     allThreads: [],
-    setAllThreads: () => {}
+    setAllThreads: () => {},
+    sidebarOpen: false,
+    setSidebarOpen: () => {}
 });

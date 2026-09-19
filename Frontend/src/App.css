@@ -1,14 +1,85 @@
 * {
+    box-sizing: border-box;
+
     color: #ececec;
-    font-family: Roboto, 'Open Sans', 'Helvetica Neue', sans-serif;
+
+    font-family:
+        Roboto,
+        "Open Sans",
+        "Helvetica Neue",
+        sans-serif;
+}
+
+html,
+body,
+#root {
+    margin: 0;
+    padding: 0;
+
+    width: 100%;
+    height: 100%;
+
+    background: #212121;
 }
 
 body {
-    margin: 0;
-    padding: 0;
+    overflow: hidden;
+}
+
+button,
+input {
+    font-family: inherit;
+}
+
+button {
+    color: inherit;
 }
 
 .app {
-    background-color: #212121;
+    width: 100%;
+    height: 100vh;
+
     display: flex;
+
+    background: #212121;
+
+    overflow: hidden;
+}
+
+
+/* =========================
+   DESKTOP
+========================= */
+
+@media (min-width: 769px) {
+    .app {
+        flex-direction: row;
+    }
+}
+
+
+/* =========================
+   TABLET
+========================= */
+
+@media (max-width: 768px) {
+    .app {
+        position: relative;
+
+        width: 100%;
+        height: 100vh;
+
+        overflow: hidden;
+    }
+}
+
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 500px) {
+    .app {
+        min-width: 0;
+    }
 }

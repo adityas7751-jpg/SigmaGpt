@@ -11,7 +11,8 @@ function ChatWindow() {
         setReply,
         currThreadId,
         setPrevChats,
-        setNewChat
+        setNewChat,
+        setSidebarOpen
     } = useContext(MyContext);
 
     const [loading, setLoading] = useState(false);
@@ -50,7 +51,6 @@ function ChatWindow() {
                 );
             }
 
-            // Add user and AI messages to frontend chat
             setPrevChats((prev) => [
                 ...prev,
                 {
@@ -68,6 +68,7 @@ function ChatWindow() {
 
         } catch (err) {
             console.log("Chat error:", err);
+
         } finally {
             setLoading(false);
         }
@@ -88,10 +89,24 @@ function ChatWindow() {
         <div className="chatWindow">
 
             <div className="navbar">
-                <span>
-                    SigmaGPT{" "}
-                    <i className="fa-solid fa-chevron-down"></i>
-                </span>
+
+                <div className="navbarLeft">
+
+                    <button
+                        className="mobileMenuButton"
+                        onClick={() =>
+                            setSidebarOpen(true)
+                        }
+                    >
+                        <i className="fa-solid fa-bars"></i>
+                    </button>
+
+                    <span>
+                        SigmaGPT{" "}
+                        <i className="fa-solid fa-chevron-down"></i>
+                    </span>
+
+                </div>
 
                 <div
                     className="userIconDiv"
@@ -101,6 +116,7 @@ function ChatWindow() {
                         <i className="fa-solid fa-user"></i>
                     </span>
                 </div>
+
             </div>
 
             {isOpen && (
