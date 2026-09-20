@@ -369,12 +369,10 @@ router.post("/forgot-password", async (req, res) => {
         }
 
         const otp =
-            crypto
-                .randomInt(
-                    100000,
-                    1000000
-                )
-                .toString();
+            crypto.randomInt(
+                100000,
+                1000000
+            ).toString();
 
         console.log(
             "OTP generated successfully."
@@ -882,6 +880,75 @@ router.get(
             return res.status(500).json({
                 error:
                     "Server error."
+            });
+        }
+    }
+);
+
+
+// ==========================================
+// UPDATE PROFILE
+// ==========================================
+
+router.put(
+    "/profile",
+    authenticate,
+    async (req, res) => {
+        try {
+            const { name } = req.body;
+
+            if (!name || !name.trim()) {
+                return res.status(400).json({
+                    error:
+                        "Name is required."
+                });
+            }
+
+            if (name.trim().length < 2) {
+                return res.status(400).json({
+                    error:
+                        "Name must be at least 2 characters."
+                });
+            }
+
+            const user =
+                await User.findById(
+                    req.userId
+                );
+
+            if (!user) {
+                return res.status(404).json({
+                    error:
+                        "User not found."
+                });
+            }
+
+            user.name =
+                name.trim();
+
+            await user.save();
+
+            return res.json({
+                message:
+                    "Profile updated successfully.",
+
+                user: {
+                    id: user._id,
+                    name: user.name,
+                    email: user.email,
+                    plan: user.plan
+                }
+            });
+
+        } catch (err) {
+            console.log(
+                "Profile update error:",
+                err
+            );
+
+            return res.status(500).json({
+                error:
+                    "Unable to update profile."
             });
         }
     }

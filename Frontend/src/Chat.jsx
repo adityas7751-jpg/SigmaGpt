@@ -1,4 +1,5 @@
 import "./Chat.css";
+
 import React, {
     useContext,
     useState,
@@ -8,10 +9,12 @@ import React, {
 import { MyContext } from "./MyContext";
 
 import ReactMarkdown from "react-markdown";
-
 import rehypeHighlight from "rehype-highlight";
 
 import "highlight.js/styles/github-dark.css";
+
+import sigmaLogo from "./assets/sigmagpt-icon.png";
+
 
 function Chat() {
 
@@ -20,61 +23,85 @@ function Chat() {
         prevChats,
         reply,
         markdownEnabled,
-        codeHighlightEnabled
+        codeHighlightEnabled,
+        setPrompt
     } = useContext(MyContext);
+
 
     const [latestReply, setLatestReply] = useState(null);
 
-    // =====================================
+
+    // =========================================
     // TYPING EFFECT
-    // =====================================
+    // =========================================
 
     useEffect(() => {
 
-        if (reply === null) {
-
+        if (
+            reply === null ||
+            reply === undefined ||
+            !reply.trim()
+        ) {
             setLatestReply(null);
-
             return;
         }
 
-        if (!prevChats?.length) {
+
+        const content = reply.trim();
+
+        if (!content) {
+            setLatestReply(null);
             return;
         }
 
-        const content = reply.split(" ");
 
-        let idx = 0;
+        const words = content.split(" ");
+
+        let index = 0;
+
+        setLatestReply("");
+
 
         const interval = setInterval(() => {
 
             setLatestReply(
-                content
-                    .slice(0, idx + 1)
+                words
+                    .slice(0, index + 1)
                     .join(" ")
             );
 
-            idx++;
+            index++;
 
-            if (idx >= content.length) {
+
+            if (index >= words.length) {
+
                 clearInterval(interval);
+
+                setLatestReply(content);
+
             }
 
-        }, 40);
+        }, 35);
+
 
         return () => {
             clearInterval(interval);
         };
 
-    }, [prevChats, reply]);
+    }, [reply]);
 
-    // =====================================
-    // RENDER MESSAGE
-    // =====================================
+
+    // =========================================
+    // MARKDOWN MESSAGE
+    // =========================================
 
     const renderMessage = (content) => {
 
-        // Markdown OFF
+        if (!content) {
+            return null;
+        }
+
+
         if (!markdownEnabled) {
 
             return (
@@ -82,9 +109,10 @@ function Chat() {
                     {content}
                 </p>
             );
+
         }
 
-        // Markdown + Code Highlighting
+
         if (codeHighlightEnabled) {
 
             return (
@@ -96,101 +124,391 @@ function Chat() {
                     {content}
                 </ReactMarkdown>
             );
+
         }
 
-        // Markdown WITHOUT code highlighting
+
         return (
             <ReactMarkdown>
                 {content}
             </ReactMarkdown>
         );
+
     };
+
+
+    // =========================================
+    // START SCREEN SUGGESTIONS
+    // =========================================
+
+    const handleSuggestion = (text) => {
+
+        if (setPrompt) {
+            setPrompt(text);
+        }
+
+    };
+
+
+    // =========================================
+    // START SCREEN
+    // =========================================
+
+    const renderStartScreen = () => {
+
+        return (
+
+            <div className="sigmaWelcome">
+
+
+                {/* =================================
+                    BRAND
+                ================================= */}
+
+                <div className="sigmaBrand">
+
+                    <div className="sigmaLogoWrapper">
+
+                        <img
+                            src={sigmaLogo}
+                            alt="SigmaGPT"
+                            className="sigmaWelcomeLogo"
+                        />
+
+                    </div>
+
+
+                    <h1>
+
+                        Welcome to
+
+                        <span>
+                            {" "}SigmaGPT
+                        </span>
+
+                    </h1>
+
+
+                    <p className="sigmaTagline">
+
+                        Think
+
+                        <span>•</span>
+
+                        Ask
+
+                        <span>•</span>
+
+                        Create
+
+                    </p>
+
+                </div>
+
+
+                {/* =================================
+                    FEATURE CARDS
+                ================================= */}
+
+                <div className="sigmaFeatures">
+
+
+                    {/* =================================
+                        GET ANSWERS
+                    ================================= */}
+
+                    <button
+                        type="button"
+                        className="sigmaFeatureCard"
+                        onClick={() =>
+                            handleSuggestion(
+                                "Explain this topic in a simple way"
+                            )
+                        }
+                    >
+
+                        <div className="featureIcon answerIcon">
+                            💡
+                        </div>
+
+
+                        <h3>
+                            Get Answers
+                        </h3>
+
+
+                        <p>
+                            Quick, accurate
+                            <br />
+                            information
+                        </p>
+
+                    </button>
+
+
+                    {/* =================================
+                        WRITE CODE
+                    ================================= */}
+
+                    <button
+                        type="button"
+                        className="sigmaFeatureCard"
+                        onClick={() =>
+                            handleSuggestion(
+                                "Write a clean and optimized program for me"
+                            )
+                        }
+                    >
+
+                        <div className="featureIcon codeIcon">
+                            &lt;/&gt;
+                        </div>
+
+
+                        <h3>
+                            Write Code
+                        </h3>
+
+
+                        <p>
+                            From simple scripts
+                            <br />
+                            to complex projects
+                        </p>
+
+                    </button>
+
+
+                    {/* =================================
+                        SUMMARIZE
+                    ================================= */}
+
+                    <button
+                        type="button"
+                        className="sigmaFeatureCard"
+                        onClick={() =>
+                            handleSuggestion(
+                                "Summarize the following content clearly"
+                            )
+                        }
+                    >
+
+                        <div className="featureIcon summaryIcon">
+                            ▤
+                        </div>
+
+
+                        <h3>
+                            Summarize
+                        </h3>
+
+
+                        <p>
+                            Turn long content
+                            <br />
+                            into clear insights
+                        </p>
+
+                    </button>
+
+
+                    {/* =================================
+                        BE CREATIVE
+                    ================================= */}
+
+                    <button
+                        type="button"
+                        className="sigmaFeatureCard"
+                        onClick={() =>
+                            handleSuggestion(
+                                "Give me some creative ideas"
+                            )
+                        }
+                    >
+
+                        <div className="featureIcon creativeIcon">
+                            ✦
+                        </div>
+
+
+                        <h3>
+                            Be Creative
+                        </h3>
+
+
+                        <p>
+                            Ideas, designs,
+                            <br />
+                            and more
+                        </p>
+
+                    </button>
+
+
+                </div>
+
+            </div>
+
+        );
+
+    };
+
+
+    // =========================================
+    // CHAT MESSAGE RENDERER
+    // =========================================
+
+    const renderChatMessages = () => {
+
+        if (!prevChats || prevChats.length === 0) {
+            return null;
+        }
+
+
+        /*
+         * Remove accidental duplicate assistant
+         * messages having exactly the same content.
+         *
+         * This keeps the UI clean if the same
+         * response is received twice.
+         */
+
+        const cleanedChats = [];
+
+        prevChats.forEach((chat) => {
+
+            const previous =
+                cleanedChats[
+                    cleanedChats.length - 1
+                ];
+
+
+            if (
+                chat.role === "assistant" &&
+                previous?.role === "assistant" &&
+                previous?.content?.trim() ===
+                    chat.content?.trim()
+            ) {
+                return;
+            }
+
+
+            cleanedChats.push(chat);
+
+        });
+
+
+        return cleanedChats.map((chat, index) => {
+
+            const isLast =
+                index === cleanedChats.length - 1;
+
+
+            // =================================
+            // USER MESSAGE
+            // =================================
+
+            if (chat.role === "user") {
+
+                return (
+
+                    <div
+                        className="userDiv"
+                        key={`user-${index}`}
+                    >
+
+                        <p className="userMessage">
+                            {chat.content}
+                        </p>
+
+                    </div>
+
+                );
+
+            }
+
+
+            // =================================
+            // ASSISTANT MESSAGE
+            // =================================
+
+            if (chat.role === "assistant") {
+
+                /*
+                 * Only show typing animation
+                 * for the latest assistant reply.
+                 */
+
+                const isLatestAssistant =
+                    isLast &&
+                    reply &&
+                    reply.trim() ===
+                        chat.content?.trim();
+
+
+                const content =
+                    isLatestAssistant &&
+                    latestReply !== null
+                        ? latestReply
+                        : chat.content;
+
+
+                return (
+
+                    <div
+                        className="gptDiv"
+                        key={`assistant-${index}`}
+                    >
+
+                        {renderMessage(content)}
+
+                    </div>
+
+                );
+
+            }
+
+
+            return null;
+
+        });
+
+    };
+
+
+    // =========================================
+    // MAIN
+    // =========================================
 
     return (
         <>
 
-            {newChat && (
-                <h1>
-                    Start a New Chat!
-                </h1>
-            )}
+
+            {/* =================================
+                NEW CHAT / WELCOME SCREEN
+            ================================= */}
+
+            {newChat &&
+                !prevChats?.length &&
+                renderStartScreen()
+            }
+
+
+            {/* =================================
+                CHAT AREA
+            ================================= */}
 
             <div className="chats">
 
-                {/* OLD MESSAGES */}
-
-                {prevChats
-                    ?.slice(0, -1)
-                    .map((chat, idx) => (
-
-                        <div
-                            className={
-                                chat.role === "user"
-                                    ? "userDiv"
-                                    : "gptDiv"
-                            }
-                            key={idx}
-                        >
-
-                            {chat.role === "user"
-                                ? (
-                                    <p className="userMessage">
-                                        {chat.content}
-                                    </p>
-                                )
-                                : (
-                                    renderMessage(
-                                        chat.content
-                                    )
-                                )
-                            }
-
-                        </div>
-
-                    ))}
-
-                {/* LATEST MESSAGE */}
-
-                {prevChats.length > 0 && (
-
-                    <>
-                        {latestReply === null ? (
-
-                            <div
-                                className="gptDiv"
-                                key="non-typing"
-                            >
-
-                                {renderMessage(
-                                    prevChats[
-                                        prevChats.length - 1
-                                    ].content
-                                )}
-
-                            </div>
-
-                        ) : (
-
-                            <div
-                                className="gptDiv"
-                                key="typing"
-                            >
-
-                                {renderMessage(
-                                    latestReply
-                                )}
-
-                            </div>
-
-                        )}
-                    </>
-
-                )}
+                {renderChatMessages()}
 
             </div>
 
+
         </>
     );
+
 }
+
 
 export default Chat;

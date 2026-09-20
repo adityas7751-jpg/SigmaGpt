@@ -1,4 +1,7 @@
-/* Main chat messages area */
+/* =========================================
+   SIGMAGPT CHAT AREA
+========================================= */
+
 .chats {
     width: min(850px, 90%);
     height: calc(100vh - 190px);
@@ -17,7 +20,6 @@
     scrollbar-color: #3a3a3a transparent;
 }
 
-/* Chrome scrollbar */
 .chats::-webkit-scrollbar {
     width: 6px;
 }
@@ -32,39 +34,334 @@
 }
 
 .chats::-webkit-scrollbar-thumb:hover {
-    background: #4a4a4a;
+    background: #505050;
 }
 
 
-/* Empty new chat */
-.emptyChat {
-    height: calc(100vh - 180px);
+/* =========================================
+   SIGMAGPT WELCOME SCREEN
+========================================= */
+
+.sigmaWelcome {
+    width: min(1000px, 92%);
+
+    margin: 0 auto;
+
+    min-height: calc(100vh - 270px);
 
     display: flex;
+    flex-direction: column;
+
     align-items: center;
     justify-content: center;
 
-    padding: 20px;
+    padding: 35px 20px 155px;
+
     box-sizing: border-box;
+
+    animation: sigmaFadeIn 0.55s ease;
 }
 
-.emptyChat h1 {
-    margin: 0;
+
+/* =========================================
+   BRAND
+========================================= */
+
+.sigmaBrand {
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+
+    text-align: center;
+
+    margin-bottom: 25px;
+}
+
+.sigmaLogoWrapper {
+    width: 125px;
+    height: 125px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    margin-bottom: 10px;
+
+    border-radius: 50%;
+
+    animation: sigmaFloat 4s ease-in-out infinite;
+}
+
+.sigmaWelcomeLogo {
+    width: 120px;
+    height: 120px;
+
+    object-fit: cover;
+
+    border-radius: 50%;
+
+    display: block;
+
+    filter:
+        drop-shadow(0 0 12px rgba(0, 132, 255, 0.35))
+        drop-shadow(0 0 25px rgba(132, 50, 255, 0.25));
+}
+
+
+/* =========================================
+   HEADING
+========================================= */
+
+.sigmaBrand h1 {
+    margin: 5px 0 0;
 
     color: #eeeeee;
 
-    font-size: clamp(28px, 4vw, 42px);
-    font-weight: 650;
+    font-size: clamp(30px, 4vw, 42px);
 
-    letter-spacing: -1px;
+    font-weight: 500;
 
-    text-align: center;
+    letter-spacing: -1.3px;
+
+    line-height: 1.15;
+}
+
+.sigmaBrand h1 span {
+    font-weight: 750;
+
+    background:
+        linear-gradient(
+            90deg,
+            #12b8ff 0%,
+            #4c8dff 35%,
+            #8b45ff 70%,
+            #d633ff 100%
+        );
+
+    -webkit-background-clip: text;
+    background-clip: text;
+
+    -webkit-text-fill-color: transparent;
 }
 
 
-/* User message row */
+/* =========================================
+   TAGLINE
+========================================= */
+
+.sigmaTagline {
+    margin: 12px 0 0;
+
+    color: #8d8d96;
+
+    font-size: 17px;
+
+    letter-spacing: 1.8px;
+
+    font-weight: 450;
+}
+
+.sigmaTagline span {
+    color: #6d6d78;
+
+    margin: 0 7px;
+}
+
+
+/* =========================================
+   FEATURE CARDS
+========================================= */
+
+.sigmaFeatures {
+    width: 100%;
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, minmax(0, 1fr));
+
+    gap: 16px;
+
+    margin-top: 12px;
+}
+
+.sigmaFeatureCard {
+    position: relative;
+
+    min-height: 150px;
+
+    padding: 20px 14px;
+
+    border-radius: 16px;
+
+    border: 1px solid #36363d;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(45, 45, 50, 0.72),
+            rgba(28, 28, 32, 0.72)
+        );
+
+    color: #ffffff;
+
+    cursor: pointer;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    text-align: center;
+
+    transition:
+        transform 0.25s ease,
+        border-color 0.25s ease,
+        background 0.25s ease,
+        box-shadow 0.25s ease;
+
+    overflow: hidden;
+}
+
+.sigmaFeatureCard::before {
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+    left: 15%;
+
+    width: 70%;
+    height: 1px;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(100, 160, 255, 0.7),
+            transparent
+        );
+
+    opacity: 0;
+
+    transition: opacity 0.25s ease;
+}
+
+.sigmaFeatureCard:hover {
+    transform: translateY(-5px);
+
+    border-color: #50505c;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(52, 52, 61, 0.9),
+            rgba(30, 30, 38, 0.9)
+        );
+
+    box-shadow:
+        0 10px 35px rgba(0, 0, 0, 0.28),
+        0 0 25px rgba(85, 70, 180, 0.08);
+}
+
+.sigmaFeatureCard:hover::before {
+    opacity: 1;
+}
+
+
+/* =========================================
+   FEATURE ICON
+========================================= */
+
+.featureIcon {
+    width: 44px;
+    height: 44px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    margin-bottom: 11px;
+
+    border-radius: 12px;
+
+    font-size: 25px;
+
+    font-weight: 600;
+
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.answerIcon {
+    color: #35c5ff;
+
+    text-shadow:
+        0 0 14px rgba(53, 197, 255, 0.5);
+}
+
+.codeIcon {
+    color: #6e8dff;
+
+    font-family: Consolas, monospace;
+
+    font-size: 21px;
+
+    text-shadow:
+        0 0 14px rgba(110, 141, 255, 0.5);
+}
+
+.summaryIcon {
+    color: #9b76ff;
+
+    font-size: 29px;
+
+    text-shadow:
+        0 0 14px rgba(155, 118, 255, 0.5);
+}
+
+.creativeIcon {
+    color: #cf65ff;
+
+    font-size: 31px;
+
+    text-shadow:
+        0 0 14px rgba(207, 101, 255, 0.5);
+}
+
+.sigmaFeatureCard h3 {
+    margin: 0 0 6px;
+
+    color: #f1f1f3;
+
+    font-size: 16px;
+
+    font-weight: 650;
+}
+
+.sigmaFeatureCard p {
+    margin: 0;
+
+    color: #94949d;
+
+    font-size: 13px;
+
+    line-height: 1.55;
+}
+
+
+/* =========================================
+   USER MESSAGE
+========================================= */
+
 .userDiv {
     display: flex;
+
     justify-content: flex-end;
 
     width: 100%;
@@ -72,8 +369,6 @@
     margin: 22px 0;
 }
 
-
-/* User message bubble */
 .userMessage {
     max-width: min(620px, 75%);
 
@@ -82,21 +377,29 @@
     padding: 11px 17px;
 
     background: #303030;
+
     color: #f1f1f1;
 
     border: 1px solid #3a3a3a;
-    border-radius: 18px 18px 5px 18px;
+
+    border-radius:
+        18px 18px 5px 18px;
 
     font-size: 15px;
+
     line-height: 1.55;
 
     word-break: break-word;
 
-    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.12);
+    box-shadow:
+        0 3px 12px rgba(0, 0, 0, 0.12);
 }
 
 
-/* AI message row */
+/* =========================================
+   AI MESSAGE
+========================================= */
+
 .gptDiv {
     width: 100%;
 
@@ -109,13 +412,12 @@
     color: #e4e4e4;
 
     font-size: 15px;
+
     line-height: 1.7;
 
     word-break: break-word;
 }
 
-
-/* AI paragraphs */
 .gptDiv p {
     margin: 0 0 14px;
 }
@@ -125,7 +427,10 @@
 }
 
 
-/* AI headings */
+/* =========================================
+   AI HEADINGS
+========================================= */
+
 .gptDiv h1,
 .gptDiv h2,
 .gptDiv h3,
@@ -151,10 +456,14 @@
 }
 
 
-/* Lists */
+/* =========================================
+   LISTS
+========================================= */
+
 .gptDiv ul,
 .gptDiv ol {
     margin: 10px 0;
+
     padding-left: 25px;
 }
 
@@ -163,7 +472,10 @@
 }
 
 
-/* Inline code */
+/* =========================================
+   CODE
+========================================= */
+
 .gptDiv code {
     background: #2b2b2b;
 
@@ -182,8 +494,6 @@
     font-size: 0.9em;
 }
 
-
-/* Code blocks */
 .gptDiv pre {
     margin: 18px 0;
 
@@ -197,7 +507,8 @@
 
     overflow-x: auto;
 
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+    box-shadow:
+        0 5px 20px rgba(0, 0, 0, 0.2);
 }
 
 .gptDiv pre code {
@@ -216,15 +527,17 @@
     line-height: 1.6;
 }
 
-
-/* Highlight.js */
 .hljs {
     border-radius: 12px !important;
+
     background: #111111 !important;
 }
 
 
-/* Blockquotes */
+/* =========================================
+   BLOCKQUOTE
+========================================= */
+
 .gptDiv blockquote {
     margin: 15px 0;
 
@@ -236,11 +549,15 @@
 
     color: #bdbdbd;
 
-    border-radius: 0 8px 8px 0;
+    border-radius:
+        0 8px 8px 0;
 }
 
 
-/* Links */
+/* =========================================
+   LINKS
+========================================= */
+
 .gptDiv a {
     color: #8ab4f8;
 
@@ -252,7 +569,10 @@
 }
 
 
-/* Horizontal line */
+/* =========================================
+   HR
+========================================= */
+
 .gptDiv hr {
     border: 0;
 
@@ -262,7 +582,10 @@
 }
 
 
-/* Tables */
+/* =========================================
+   TABLE
+========================================= */
+
 .gptDiv table {
     width: 100%;
 
@@ -286,6 +609,7 @@
 
 .gptDiv th {
     background: #292929;
+
     color: #ffffff;
 }
 
@@ -294,13 +618,182 @@
 }
 
 
-/* Mobile */
+/* =========================================
+   ANIMATIONS
+========================================= */
+
+@keyframes sigmaFadeIn {
+
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+}
+
+@keyframes sigmaFloat {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-5px);
+    }
+
+}
+
+
+/* =========================================
+   LIGHT THEME
+========================================= */
+
+.lightTheme .chats {
+    color: #202020;
+}
+
+.lightTheme .userMessage {
+    background-color: #eeeeee;
+    color: #202020;
+}
+
+.lightTheme .gptDiv {
+    color: #202020;
+}
+
+.lightTheme .gptDiv p,
+.lightTheme .gptDiv li,
+.lightTheme .gptDiv h1,
+.lightTheme .gptDiv h2,
+.lightTheme .gptDiv h3,
+.lightTheme .gptDiv h4,
+.lightTheme .gptDiv strong {
+    color: #202020;
+}
+
+.lightTheme .gptDiv code {
+    color: #202020;
+}
+
+.lightTheme pre {
+    background-color: #f1f1f1;
+    border: 1px solid #dddddd;
+}
+
+.lightTheme .sigmaBrand h1 {
+    color: #202020;
+}
+
+.lightTheme .sigmaTagline {
+    color: #55555d;
+}
+
+.lightTheme .sigmaFeatureCard {
+    background: #ffffff;
+    border-color: #dddddd;
+
+    box-shadow:
+        0 5px 20px rgba(0, 0, 0, 0.06);
+}
+
+.lightTheme .sigmaFeatureCard h3 {
+    color: #202020;
+}
+
+.lightTheme .sigmaFeatureCard p {
+    color: #666666;
+}
+
+
+/* =========================================
+   TABLET
+========================================= */
+
+@media (max-width: 900px) {
+
+    .sigmaFeatures {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+
+        max-width: 650px;
+    }
+
+    .sigmaWelcome {
+        padding-top: 25px;
+    }
+
+}
+
+
+/* =========================================
+   MOBILE
+========================================= */
+
 @media (max-width: 768px) {
+
     .chats {
         width: 94%;
+
         height: calc(100vh - 170px);
 
         padding: 25px 5px 130px;
+    }
+
+    .sigmaWelcome {
+        width: 96%;
+
+        min-height: calc(100vh - 210px);
+
+        padding:
+            25px 8px 145px;
+    }
+
+    .sigmaLogoWrapper {
+        width: 100px;
+        height: 100px;
+    }
+
+    .sigmaWelcomeLogo {
+        width: 96px;
+        height: 96px;
+    }
+
+    .sigmaBrand h1 {
+        font-size: 31px;
+    }
+
+    .sigmaTagline {
+        font-size: 14px;
+        letter-spacing: 1.3px;
+    }
+
+    .sigmaFeatures {
+        gap: 10px;
+    }
+
+    .sigmaFeatureCard {
+        min-height: 135px;
+        padding: 16px 8px;
+    }
+
+    .sigmaFeatureCard h3 {
+        font-size: 14px;
+    }
+
+    .sigmaFeatureCard p {
+        font-size: 11px;
+    }
+
+    .featureIcon {
+        width: 38px;
+        height: 38px;
+        font-size: 21px;
     }
 
     .userMessage {
@@ -316,75 +809,123 @@
     .gptDiv pre {
         padding: 12px;
     }
+
 }
 
 
-/* Small mobile */
+/* =========================================
+   SMALL MOBILE
+========================================= */
+
 @media (max-width: 480px) {
+
     .chats {
         width: 96%;
+    }
+
+    .sigmaFeatures {
+        grid-template-columns: 1fr;
+    }
+
+    .sigmaFeatureCard {
+        min-height: 110px;
+    }
+
+    .sigmaBrand h1 {
+        font-size: 28px;
+    }
+
+    .sigmaWelcomeLogo {
+        width: 88px;
+        height: 88px;
     }
 
     .userMessage {
         max-width: 88%;
     }
 
-    .emptyChat h1 {
-        font-size: 28px;
-    }
 }
-/* =========================
-   LIGHT THEME CHAT
-========================= */
+/* =========================================
+   FINAL SIGMAGPT WELCOME LOGO FIX
+========================================= */
 
-.lightTheme .chats {
-    color: #202020;
-}
+.sigmaWelcome .sigmaLogoWrapper {
+    width: 125px !important;
+    height: 125px !important;
 
+    min-width: 125px !important;
+    min-height: 125px !important;
 
-.lightTheme .userMessage {
-    background-color: #eeeeee;
+    max-width: 125px !important;
+    max-height: 125px !important;
 
-    color: #202020;
-}
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
 
+    margin: 0 auto 12px !important;
 
-.lightTheme .gptDiv {
-    color: #202020;
-}
+    overflow: hidden !important;
 
+    flex-shrink: 0 !important;
 
-.lightTheme .gptDiv p,
-.lightTheme .gptDiv li,
-.lightTheme .gptDiv h1,
-.lightTheme .gptDiv h2,
-.lightTheme .gptDiv h3,
-.lightTheme .gptDiv h4,
-.lightTheme .gptDiv strong {
-    color: #202020;
+    border-radius: 50% !important;
 }
 
+.sigmaWelcome .sigmaWelcomeLogo {
+    width: 120px !important;
+    height: 120px !important;
 
-.lightTheme .gptDiv code {
-    color: #202020;
+    min-width: 120px !important;
+    min-height: 120px !important;
+
+    max-width: 120px !important;
+    max-height: 120px !important;
+
+    display: block !important;
+
+    object-fit: cover !important;
+
+    object-position: center !important;
+
+    border-radius: 50% !important;
+
+    flex: 0 0 120px !important;
+
+    filter:
+        drop-shadow(0 0 12px rgba(0, 132, 255, 0.35))
+        drop-shadow(0 0 25px rgba(132, 50, 255, 0.25)) !important;
 }
 
 
-.lightTheme pre {
-    background-color: #f1f1f1;
+/* Keep hero content centered */
 
-    border: 1px solid #dddddd;
+.sigmaHero {
+    width: 100% !important;
+
+    display: flex !important;
+
+    flex-direction: column !important;
+
+    align-items: center !important;
+
+    justify-content: center !important;
+
+    text-align: center !important;
 }
-/* =========================
-   LIGHT THEME START SCREEN
-========================= */
 
-.lightTheme h1 {
-    color: #202020 !important;
-    opacity: 1 !important;
+
+/* Prevent any image from expanding the welcome screen */
+
+.sigmaWelcome img {
+    max-width: 100% !important;
 }
 
-.lightTheme .chats h1 {
-    color: #202020 !important;
-    opacity: 1 !important;
+
+/* But keep Sigma logo fixed */
+
+.sigmaWelcome .sigmaWelcomeLogo {
+    width: 120px !important;
+    height: 120px !important;
+    max-width: 120px !important;
 }

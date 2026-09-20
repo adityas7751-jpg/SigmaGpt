@@ -134,12 +134,24 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: flex-start;
 
-    padding: 10px 20px 14px;
+    padding: 12px 20px 16px;
 
     box-sizing: border-box;
 
     flex-shrink: 0;
+
+    position: relative;
+    z-index: 50;
+
+    background: #212121;
+}
+
+/* Keep the composer and its tools above the welcome cards */
+.chatInput > * {
+    position: relative;
+    z-index: 51;
 }
 
 
@@ -2800,4 +2812,1535 @@
 .premiumUsage .usageHeader strong {
     color: #4ade80;
     font-size: 20px;
+}
+/* =========================================
+   PROFILE AI USAGE
+========================================= */
+
+.profileUsage {
+    margin: 4px 12px 12px;
+    padding: 12px 13px;
+
+    background: rgba(255, 255, 255, 0.035);
+
+    border: 1px solid rgba(255, 255, 255, 0.07);
+
+    border-radius: 12px;
+
+    box-sizing: border-box;
+}
+
+.profileUsageTop {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 10px;
+}
+
+.profileUsageTitle {
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+
+    min-width: 0;
+}
+
+.profileUsageIcon {
+    width: 30px;
+    height: 30px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    border-radius: 8px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(0, 174, 255, 0.16),
+            rgba(151, 65, 255, 0.16)
+        );
+
+    color: #8b5cf6;
+
+    font-size: 13px;
+}
+
+.profileUsageTitle strong {
+    display: block;
+
+    color: #eeeeee;
+
+    font-size: 13px;
+
+    font-weight: 600;
+}
+
+.profileUsageTitle span {
+    display: block;
+
+    margin-top: 2px;
+
+    color: #858585;
+
+    font-size: 10px;
+
+    white-space: nowrap;
+}
+
+.usageCount {
+    color: #a56bff;
+
+    font-size: 11px;
+
+    font-weight: 600;
+
+    white-space: nowrap;
+}
+
+
+/* =========================================
+   USAGE PROGRESS
+========================================= */
+
+.usageProgress {
+    width: 100%;
+
+    height: 5px;
+
+    margin-top: 11px;
+
+    overflow: hidden;
+
+    border-radius: 20px;
+
+    background: #303033;
+}
+
+.usageProgressBar {
+    height: 100%;
+
+    min-width: 0;
+
+    border-radius: 20px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #7c3aed,
+            #a855f7
+        );
+
+    transition: width 0.3s ease;
+}
+
+
+/* =========================================
+   REMAINING MESSAGES
+========================================= */
+
+.usageRemaining {
+    margin-top: 8px;
+
+    color: #777777;
+
+    font-size: 10px;
+}
+
+
+/* =========================================
+   PREMIUM UNLIMITED
+========================================= */
+
+.usageUnlimited {
+    display: flex;
+
+    align-items: center;
+
+    gap: 6px;
+
+    margin-top: 8px;
+
+    color: #9d6cff;
+
+    font-size: 10px;
+}
+
+.usageUnlimited i {
+    color: #8b5cf6;
+
+    font-size: 10px;
+}
+
+
+/* =========================================
+   LIGHT THEME
+========================================= */
+
+.lightTheme .profileUsage {
+    background: rgba(0, 0, 0, 0.035);
+
+    border-color: rgba(0, 0, 0, 0.08);
+}
+
+.lightTheme .profileUsageTitle strong {
+    color: #222222;
+}
+
+.lightTheme .profileUsageTitle span {
+    color: #777777;
+}
+
+.lightTheme .usageRemaining {
+    color: #666666;
+}
+
+.lightTheme .usageProgress {
+    background: #dddddd;
+}
+
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media (max-width: 600px) {
+
+    .profileUsage {
+        margin-left: 10px;
+        margin-right: 10px;
+    }
+
+    .profileUsageTitle span {
+        font-size: 9px;
+    }
+
+    .usageCount {
+        font-size: 10px;
+    }
+}
+
+/* =========================================
+   EDIT PROFILE
+========================================= */
+
+.settingsEditButton {
+    margin-left: auto;
+
+    min-height: 38px;
+
+    padding: 0 13px;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 8px;
+
+    flex-shrink: 0;
+
+    background: #343434;
+
+    border: 1px solid #444;
+
+    border-radius: 9px;
+
+    color: #d7d7d7;
+
+    font-family: inherit;
+
+    font-size: 12px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        color 0.2s ease,
+        transform 0.15s ease;
+}
+
+.settingsEditButton:hover {
+    background: #3d3d3d;
+    border-color: #555;
+    color: #ffffff;
+    transform: translateY(-1px);
+}
+
+.settingsEditButton:active {
+    transform: scale(0.98);
+}
+
+.settingsEditButton i {
+    color: #999;
+    font-size: 10px;
+    transition: transform 0.2s ease;
+}
+
+.settingsEditButton:hover i {
+    color: #fff;
+    transform: translateX(2px);
+}
+
+.profileEditModal {
+    width: 520px;
+    max-width: calc(100vw - 30px);
+
+    background: #202020;
+
+    border: 1px solid #363636;
+
+    border-radius: 18px;
+
+    overflow: hidden;
+
+    color: #ececec;
+
+    box-shadow:
+        0 25px 80px rgba(0, 0, 0, 0.55);
+
+    animation: profileEditModalIn 0.18s ease-out;
+}
+
+@keyframes profileEditModalIn {
+    from {
+        opacity: 0;
+        transform: translateY(8px) scale(0.98);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.profileEditBody {
+    padding: 28px 26px 26px;
+}
+
+.profileEditAvatar {
+    width: 64px;
+    height: 64px;
+
+    margin: 0 auto 24px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #339cff;
+
+    border-radius: 50%;
+
+    color: #fff;
+
+    font-size: 22px;
+
+    box-shadow:
+        0 0 0 5px rgba(51, 156, 255, 0.10);
+}
+
+.profileFormGroup {
+    display: flex;
+    flex-direction: column;
+
+    gap: 7px;
+
+    margin-bottom: 18px;
+}
+
+.profileFormGroup label {
+    color: #dcdcdc;
+
+    font-size: 12px;
+
+    font-weight: 600;
+}
+
+.profileFormGroup input {
+    width: 100%;
+
+    min-height: 46px;
+
+    box-sizing: border-box;
+
+    padding: 0 13px;
+
+    background: #292929;
+
+    border: 1px solid #3c3c3c;
+
+    border-radius: 10px;
+
+    outline: none;
+
+    color: #f1f1f1;
+
+    font-family: inherit;
+
+    font-size: 13px;
+
+    transition:
+        border-color 0.2s ease,
+        background 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.profileFormGroup input:focus {
+    background: #2d2d2d;
+
+    border-color: #5b5b5b;
+
+    box-shadow:
+        0 0 0 3px rgba(51, 156, 255, 0.08);
+}
+
+.profileFormGroup input:disabled {
+    opacity: 0.72;
+
+    cursor: not-allowed;
+}
+
+.profileFormGroup input[readonly] {
+    color: #999;
+
+    background: #252525;
+}
+
+.profileFormHint {
+    color: #707070;
+
+    font-size: 10px;
+}
+
+.profileEditActions {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: flex-end;
+
+    gap: 10px;
+
+    margin-top: 26px;
+}
+
+.profileCancelButton,
+.profileSaveButton {
+    min-height: 42px;
+
+    padding: 0 16px;
+
+    border-radius: 9px;
+
+    font-family: inherit;
+
+    font-size: 12px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.15s ease,
+        opacity 0.2s ease;
+}
+
+.profileCancelButton {
+    background: transparent;
+
+    border: 1px solid #3b3b3b;
+
+    color: #aaa;
+}
+
+.profileCancelButton:hover {
+    background: #2d2d2d;
+
+    border-color: #4b4b4b;
+
+    color: #fff;
+}
+
+.profileSaveButton {
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 8px;
+
+    background: #339cff;
+
+    border: 1px solid #339cff;
+
+    color: #fff;
+}
+
+.profileSaveButton:hover {
+    background: #238de9;
+
+    border-color: #238de9;
+
+    transform: translateY(-1px);
+}
+
+.profileCancelButton:disabled,
+.profileSaveButton:disabled {
+    opacity: 0.55;
+
+    cursor: not-allowed;
+
+    transform: none;
+}
+
+
+/* =========================================
+   EDIT PROFILE - LIGHT THEME
+========================================= */
+
+.lightTheme .profileEditModal {
+    background: #ffffff;
+
+    border-color: #dddddd;
+
+    color: #202020;
+
+    box-shadow:
+        0 25px 80px rgba(0, 0, 0, 0.20);
+}
+
+.lightTheme .profileFormGroup label {
+    color: #333;
+}
+
+.lightTheme .profileFormGroup input {
+    background: #f7f7f7;
+
+    border-color: #dddddd;
+
+    color: #222;
+}
+
+.lightTheme .profileFormGroup input:focus {
+    background: #ffffff;
+
+    border-color: #b9b9b9;
+
+    box-shadow:
+        0 0 0 3px rgba(51, 156, 255, 0.08);
+}
+
+.lightTheme .profileFormGroup input[readonly] {
+    background: #f1f1f1;
+
+    color: #777;
+}
+
+.lightTheme .profileFormHint {
+    color: #888;
+}
+
+.lightTheme .settingsEditButton {
+    background: #f0f0f0;
+
+    border-color: #dddddd;
+
+    color: #444;
+}
+
+.lightTheme .settingsEditButton:hover {
+    background: #e7e7e7;
+
+    border-color: #cfcfcf;
+
+    color: #222;
+}
+
+.lightTheme .settingsEditButton i {
+    color: #777;
+}
+
+.lightTheme .settingsEditButton:hover i {
+    color: #333;
+}
+
+.lightTheme .profileCancelButton {
+    background: #fff;
+
+    border-color: #d9d9d9;
+
+    color: #555;
+}
+
+.lightTheme .profileCancelButton:hover {
+    background: #f3f3f3;
+
+    border-color: #cfcfcf;
+
+    color: #222;
+}
+
+
+/* =========================================
+   EDIT PROFILE - MOBILE
+========================================= */
+
+@media (max-width: 600px) {
+    .settingsCard {
+        align-items: flex-start;
+        flex-wrap: wrap;
+    }
+
+    .settingsUserInfo {
+        padding-top: 2px;
+        min-width: 0;
+        flex: 1;
+    }
+
+    .settingsEditButton {
+        width: 100%;
+        margin-left: 0;
+        margin-top: 4px;
+    }
+
+    .profileEditModal {
+        width: calc(100vw - 24px);
+        border-radius: 16px;
+    }
+
+    .profileEditBody {
+        padding: 24px 20px 20px;
+    }
+
+    .profileEditActions {
+        flex-direction: column-reverse;
+    }
+
+    .profileCancelButton,
+    .profileSaveButton {
+        width: 100%;
+    }
+}
+/* =========================
+   FILE ATTACHMENTS
+========================= */
+
+.hiddenFileInput {
+    display: none !important;
+}
+
+.attachButton {
+    position: absolute;
+
+    left: 9px;
+
+    width: 36px;
+    height: 36px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: none;
+
+    border-radius: 10px;
+
+    background: transparent;
+
+    color: #a8a8a8;
+
+    cursor: pointer;
+
+    z-index: 2;
+
+    transition:
+        background 0.2s ease,
+        color 0.2s ease,
+        transform 0.15s ease;
+}
+
+.attachButton:hover {
+    background: #404040;
+
+    color: #ffffff;
+}
+
+.attachButton:active {
+    transform: scale(0.92);
+}
+
+.attachButton i {
+    font-size: 15px;
+}
+
+.attachmentPreview {
+    width: min(850px, 92%);
+
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+
+    margin-bottom: 8px;
+
+    padding: 8px 10px;
+
+    box-sizing: border-box;
+
+    background: #252525;
+
+    border: 1px solid #3d3d3d;
+
+    border-radius: 12px;
+}
+
+.attachmentFileIcon {
+    width: 34px;
+    height: 34px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    border-radius: 9px;
+
+    background: rgba(96, 120, 255, 0.12);
+
+    color: #78a0ff;
+}
+
+.attachmentFileInfo {
+    min-width: 0;
+
+    flex: 1;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 1px;
+}
+
+.attachmentFileInfo strong {
+    overflow: hidden;
+
+    color: #e5e5e5;
+
+    font-size: 12px;
+
+    font-weight: 600;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
+}
+
+.attachmentFileInfo span {
+    color: #777;
+
+    font-size: 10px;
+}
+
+.removeAttachment {
+    width: 30px;
+    height: 30px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    border: none;
+
+    border-radius: 8px;
+
+    background: transparent;
+
+    color: #888;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        color 0.2s ease;
+}
+
+.removeAttachment:hover {
+    background: #3b3b3b;
+
+    color: #ffffff;
+}
+
+.lightTheme .attachButton {
+    color: #777;
+}
+
+.lightTheme .attachButton:hover {
+    background: #eeeeee;
+
+    color: #333;
+}
+
+.lightTheme .attachmentPreview {
+    background: #f5f5f5;
+
+    border-color: #dddddd;
+}
+
+.lightTheme .attachmentFileInfo strong {
+    color: #333;
+}
+
+.lightTheme .attachmentFileInfo span {
+    color: #888;
+}
+
+.lightTheme .removeAttachment:hover {
+    background: #e8e8e8;
+
+    color: #333;
+}
+
+@media (max-width: 768px) {
+
+    .attachmentPreview {
+        width: 96%;
+    }
+
+    .attachButton {
+        left: 7px;
+    }
+
+    .inputBox input {
+        padding-left: 48px;
+    }
+}
+
+@media (max-width: 480px) {
+
+    .attachmentPreview {
+        width: 98%;
+    }
+}
+/* =====================================================
+   SIGMAGPT AI COMPOSER
+===================================================== */
+
+.sigmaComposer {
+    width: min(920px, 92%);
+    min-height: 66px;
+
+    box-sizing: border-box;
+
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+    padding: 8px 12px;
+
+    border: 1px solid rgba(255, 255, 255, 0.13);
+    border-radius: 24px;
+
+    background: #2b2b2b;
+
+    position: relative;
+    z-index: 60;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        background 0.2s ease;
+}
+
+.sigmaComposer:focus-within {
+    background: #2e2e2e;
+
+    border-color: rgba(90, 140, 255, 0.45);
+
+    box-shadow:
+        0 0 0 3px rgba(60, 120, 255, 0.08),
+        0 10px 30px rgba(0, 0, 0, 0.22);
+}
+
+
+/* =====================================================
+   ATTACH BUTTON
+===================================================== */
+
+.composerIconButton {
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+
+    border: none;
+    border-radius: 50%;
+
+    background: rgba(255, 255, 255, 0.055);
+
+    color: #cfd3dc;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    cursor: pointer;
+
+    font-size: 18px;
+
+    transition: all 0.2s ease;
+}
+
+.composerIconButton:hover {
+    background: rgba(255, 255, 255, 0.11);
+    color: #ffffff;
+
+    transform: translateY(-1px);
+}
+
+.composerIconButton:active {
+    transform: scale(0.94);
+}
+
+
+/* =====================================================
+   INPUT
+===================================================== */
+
+.sigmaComposer .promptInput {
+    flex: 1;
+    min-width: 0;
+
+    height: 46px;
+
+    border: none;
+    outline: none;
+
+    background: transparent;
+
+    color: #f5f5f5;
+
+    font-family: inherit;
+    font-size: 16px;
+
+    padding: 12px 4px;
+}
+
+.sigmaComposer .promptInput::placeholder {
+    color: #858994;
+}
+
+.sigmaComposer .promptInput:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+
+/* =====================================================
+   SEND BUTTON
+===================================================== */
+
+.composerSendButton {
+    width: 46px;
+    height: 46px;
+    min-width: 46px;
+
+    border: none;
+    border-radius: 50%;
+
+    background: linear-gradient(
+        135deg,
+        #1687ff,
+        #7b35ff
+    );
+
+    color: #ffffff;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    cursor: pointer;
+
+    font-size: 17px;
+
+    box-shadow:
+        0 5px 20px rgba(70, 100, 255, 0.28);
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        opacity 0.2s ease;
+}
+
+.composerSendButton:hover:not(:disabled) {
+    transform: translateY(-2px) scale(1.03);
+
+    box-shadow:
+        0 8px 26px rgba(70, 100, 255, 0.4);
+}
+
+.composerSendButton:active:not(:disabled) {
+    transform: scale(0.94);
+}
+
+.composerSendButton:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+
+/* =====================================================
+   TOOL ROW
+===================================================== */
+
+.composerTools {
+    width: min(920px, 92%);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 10px;
+
+    margin-top: 14px;
+
+    flex-wrap: wrap;
+
+    position: relative;
+    z-index: 60;
+}
+
+
+/* =====================================================
+   TOOL BUTTON
+===================================================== */
+
+.composerTool {
+    height: 42px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 8px;
+
+    padding: 0 16px;
+
+    border-radius: 22px;
+
+    border: 1px solid rgba(255, 255, 255, 0.13);
+
+    background: rgba(25, 25, 29, 0.96);
+
+    color: #d7d9df;
+
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 500;
+
+    white-space: nowrap;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        color 0.2s ease,
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.composerTool:hover {
+    background: #303036;
+
+    border-color: rgba(255, 255, 255, 0.23);
+
+    color: #ffffff;
+
+    transform: translateY(-1px);
+
+    box-shadow:
+        0 5px 16px rgba(0, 0, 0, 0.18);
+}
+
+.composerTool:active {
+    transform: scale(0.97);
+}
+
+
+/* =====================================================
+   TOOL ICONS
+===================================================== */
+
+.toolIcon {
+    width: 22px;
+    height: 22px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 15px;
+}
+
+.imageToolIcon {
+    color: #c45cff;
+}
+
+.summarizeToolIcon {
+    color: #61a5ff;
+}
+
+.codeToolIcon {
+    color: #00e5a8;
+}
+
+.pdfToolIcon {
+    color: #ff5b63;
+}
+
+.brainstormToolIcon {
+    color: #ffd23f;
+}
+
+.moreTool {
+    padding-left: 17px;
+    padding-right: 17px;
+}
+
+
+/* =====================================================
+   ATTACHMENT PREVIEW
+===================================================== */
+
+.attachmentPreview {
+    width: min(920px, 92%);
+
+    margin: 0 auto 10px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+
+    padding: 10px 13px;
+
+    box-sizing: border-box;
+
+    border-radius: 14px;
+
+    background: #252525;
+
+    border: 1px solid rgba(255, 255, 255, 0.10);
+
+    position: relative;
+    z-index: 61;
+}
+
+.attachmentFileIcon {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 10px;
+
+    background: rgba(95, 125, 255, 0.12);
+
+    color: #7fa4ff;
+
+    font-size: 17px;
+}
+
+.attachmentFileInfo {
+    flex: 1;
+    min-width: 0;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 3px;
+}
+
+.attachmentFileInfo strong {
+    color: #eeeeee;
+
+    font-size: 13px;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
+}
+
+.attachmentFileInfo span {
+    color: #858994;
+
+    font-size: 11px;
+}
+
+.removeAttachment {
+    width: 32px;
+    height: 32px;
+
+    border: none;
+    border-radius: 50%;
+
+    background: transparent;
+
+    color: #999;
+
+    cursor: pointer;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    transition: all 0.2s ease;
+}
+
+.removeAttachment:hover {
+    background: rgba(255, 80, 80, 0.12);
+    color: #ff6565;
+}
+
+
+/* =====================================================
+   COMPOSER INFO
+===================================================== */
+
+.composerInfo {
+    width: min(920px, 92%);
+
+    margin-top: 11px;
+
+    text-align: center;
+
+    color: #707070;
+
+    font-size: 11px;
+
+    line-height: 16px;
+
+    position: relative;
+    z-index: 60;
+}
+
+.composerInfo i {
+    margin-right: 5px;
+
+    color: #7c8cff;
+}
+
+
+/* =====================================================
+   LIGHT THEME
+===================================================== */
+
+.lightTheme .chatInput {
+    background: #ffffff;
+}
+
+.lightTheme .sigmaComposer {
+    background: #f2f2f2;
+
+    border-color: #dddddd;
+
+    box-shadow:
+        0 8px 25px rgba(0, 0, 0, 0.08);
+}
+
+.lightTheme .sigmaComposer:focus-within {
+    background: #ffffff;
+
+    border-color: #b9c9e8;
+
+    box-shadow:
+        0 0 0 3px rgba(51, 156, 255, 0.08),
+        0 8px 25px rgba(0, 0, 0, 0.08);
+}
+
+.lightTheme .sigmaComposer .promptInput {
+    color: #222222;
+}
+
+.lightTheme .sigmaComposer .promptInput::placeholder {
+    color: #888888;
+}
+
+.lightTheme .composerIconButton {
+    background: #e8e8e8;
+    color: #555555;
+}
+
+.lightTheme .composerIconButton:hover {
+    background: #dddddd;
+    color: #222222;
+}
+
+.lightTheme .composerTool {
+    background: #ffffff;
+
+    border-color: #dddddd;
+
+    color: #444444;
+}
+
+.lightTheme .composerTool:hover {
+    background: #f2f2f2;
+
+    border-color: #cfcfcf;
+
+    color: #222222;
+}
+
+.lightTheme .attachmentPreview {
+    background: #f5f5f5;
+
+    border-color: #dddddd;
+}
+
+.lightTheme .attachmentFileInfo strong {
+    color: #333333;
+}
+
+.lightTheme .attachmentFileInfo span {
+    color: #888888;
+}
+
+.lightTheme .removeAttachment:hover {
+    background: #e8e8e8;
+
+    color: #333333;
+}
+
+.lightTheme .composerInfo {
+    color: #777777;
+}
+
+
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+
+@media (max-width: 1100px) {
+
+    .composerTools {
+        gap: 8px;
+    }
+
+    .composerTool {
+        padding: 0 14px;
+    }
+}
+
+
+@media (max-width: 900px) {
+
+    .sigmaComposer,
+    .composerTools,
+    .attachmentPreview,
+    .composerInfo {
+        width: min(94%, 920px);
+    }
+
+    .composerTools {
+        gap: 7px;
+    }
+
+    .composerTool {
+        height: 40px;
+
+        padding: 0 13px;
+
+        font-size: 13px;
+    }
+}
+
+
+@media (max-width: 700px) {
+
+    .chatInput {
+        padding: 10px 10px 12px;
+    }
+
+    .sigmaComposer,
+    .composerTools,
+    .attachmentPreview,
+    .composerInfo {
+        width: 96%;
+    }
+
+    .composerTools {
+        justify-content: flex-start;
+
+        overflow-x: auto;
+
+        flex-wrap: nowrap;
+
+        padding: 2px 3px 7px;
+
+        scrollbar-width: none;
+    }
+
+    .composerTools::-webkit-scrollbar {
+        display: none;
+    }
+
+    .composerTool {
+        flex: 0 0 auto;
+    }
+
+    .sigmaComposer {
+        min-height: 60px;
+
+        padding: 7px 9px;
+
+        border-radius: 20px;
+    }
+
+    .composerIconButton {
+        width: 40px;
+        height: 40px;
+        min-width: 40px;
+    }
+
+    .composerSendButton {
+        width: 42px;
+        height: 42px;
+        min-width: 42px;
+    }
+
+    .sigmaComposer .promptInput {
+        height: 42px;
+
+        font-size: 14px;
+
+        padding: 10px 3px;
+    }
+}
+
+
+@media (max-width: 480px) {
+
+    .chatInput {
+        padding: 8px 7px 10px;
+    }
+
+    .sigmaComposer,
+    .composerTools,
+    .attachmentPreview,
+    .composerInfo {
+        width: 98%;
+    }
+
+    .composerTools {
+        gap: 6px;
+    }
+
+    .composerTool {
+        height: 38px;
+
+        padding: 0 12px;
+
+        font-size: 12px;
+    }
+
+    .toolIcon {
+        width: 20px;
+        height: 20px;
+
+        font-size: 14px;
+    }
+
+    .composerInfo {
+        font-size: 10px;
+    }
+}
+
+/* =========================================
+   FIX - CHAT INPUT ALWAYS VISIBLE
+========================================= */
+
+.chatWindow {
+    position: relative;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.chatInput {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    width: 100%;
+
+    padding: 10px 20px 14px;
+
+    background: linear-gradient(
+        to top,
+        #212121 65%,
+        rgba(33, 33, 33, 0.92) 85%,
+        transparent 100%
+    );
+
+    z-index: 100;
+}
+
+.inputBox {
+    width: min(850px, 92%);
+    min-height: 56px;
+}
+
+.info {
+    margin-bottom: 0;
+}
+/* =========================================
+   SIGMAGPT NAVBAR BRAND
+========================================= */
+
+.navbarBrand {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+}
+
+.navbarLogo {
+    width: 30px;
+    height: 30px;
+    object-fit: cover;
+    border-radius: 8px;
+    display: block;
+}
+
+.brandName {
+    color: #eeeeee;
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: -0.2px;
+}
+
+.lightTheme .brandName {
+    color: #222222;
 }

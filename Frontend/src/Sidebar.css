@@ -390,22 +390,89 @@
 ========================= */
 
 .sign {
-    padding: 14px 10px;
+    padding: 12px 10px;
 
     margin: 8px 12px 10px;
-
-    font-size: 12px;
-
-    color: #777;
-
-    text-align: center;
 
     border-top: 1px solid #292929;
 }
 
 
-.sign p {
-    margin: 12px 0 2px;
+.signBrand {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 10px;
+
+    padding: 8px 6px;
+
+    border-radius: 10px;
+
+    transition:
+        background 0.2s ease,
+        transform 0.2s ease;
+}
+
+
+.signBrand:hover {
+    background: #191919;
+
+    transform: translateY(-1px);
+}
+
+
+.signBrandLogo {
+    width: 30px;
+
+    height: 30px;
+
+    flex-shrink: 0;
+
+    object-fit: cover;
+
+    border-radius: 8px;
+
+    filter:
+        drop-shadow(0 0 5px rgba(0, 140, 255, 0.28))
+        drop-shadow(0 0 8px rgba(150, 50, 255, 0.18));
+}
+
+
+.signBrandText {
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: flex-start;
+
+    min-width: 0;
+}
+
+
+.signBrandText strong {
+    color: #e7e7e7;
+
+    font-size: 12px;
+
+    font-weight: 600;
+
+    line-height: 16px;
+}
+
+
+.signBrandText span {
+    margin-top: 1px;
+
+    color: #666;
+
+    font-size: 10px;
+
+    line-height: 14px;
+
+    white-space: nowrap;
 }
 
 
@@ -1314,9 +1381,22 @@
 
 
 .lightTheme .sign {
-    color: #666;
-
     border-top-color: #dddddd;
+}
+
+
+.lightTheme .signBrand:hover {
+    background: #eeeeee;
+}
+
+
+.lightTheme .signBrandText strong {
+    color: #333;
+}
+
+
+.lightTheme .signBrandText span {
+    color: #888;
 }
 
 
@@ -1337,5 +1417,338 @@
     .lightTheme .sidebar {
         box-shadow:
             10px 0 35px rgba(0, 0, 0, 0.15);
+    }
+}
+.logo {
+    width: 42px;
+    height: 42px;
+    object-fit: cover;
+    border-radius: 10px;
+
+    display: block;
+
+    filter:
+        drop-shadow(0 0 6px rgba(0, 140, 255, 0.35))
+        drop-shadow(0 0 10px rgba(150, 50, 255, 0.25));
+}
+/* =========================================
+   SIGMAGPT SIDEBAR BRAND
+========================================= */
+
+.newChatButton {
+    width: calc(100% - 16px);
+    height: 58px;
+
+    margin: 8px;
+
+    padding: 0 12px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    background: #181818;
+
+    border: 1px solid #292929;
+    border-radius: 12px;
+
+    cursor: pointer;
+}
+
+.sidebarBrand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.sidebarBrandLogo {
+    width: 36px;
+    height: 36px;
+
+    object-fit: contain;
+
+    border-radius: 9px;
+}
+
+.sidebarBrandName {
+    color: #f2f2f2;
+
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.newChatIcon {
+    width: 32px;
+    height: 32px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: #ddd;
+
+    border-radius: 8px;
+}
+
+.newChatButton:hover {
+    background: #202020;
+}
+
+.newChatButton:hover .newChatIcon {
+    background: #292929;
+    color: #fff;
+}
+
+
+/* =========================================
+   REMOVE OLD BOTTOM BRANDING
+========================================= */
+
+.sign {
+    display: none !important;
+}
+/* =========================================
+   SIGMAGPT SIDEBAR FOOTER
+========================================= */
+
+.sidebarFooter {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    padding: 18px 12px 20px;
+
+    background: linear-gradient(
+        to top,
+        #111111 75%,
+        rgba(17, 17, 17, 0)
+    );
+
+    text-align: center;
+
+    z-index: 20;
+}
+
+.sidebarFooterLine {
+    width: 85%;
+    height: 1px;
+
+    margin: 0 auto 16px;
+
+    background: #292929;
+}
+
+.sidebarFooterText {
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 7px;
+
+    font-size: 15px;
+    font-weight: 700;
+
+    letter-spacing: 0.3px;
+
+    color: #eeeeee;
+}
+
+.sidebarFooterText span:first-child {
+    color: #38bdf8;
+}
+
+.sidebarFooterText span:nth-of-type(2) {
+    color: #a78bfa;
+}
+
+.sidebarFooterText span:nth-of-type(3) {
+    color: #60a5fa;
+}
+
+.sidebarFooterText span:nth-of-type(4) {
+    color: #d946ef;
+}
+
+.sidebarFooterText b {
+    color: #555;
+    font-size: 11px;
+}
+
+.sidebarFooterSubtext {
+    margin-top: 7px;
+
+    font-size: 10px;
+
+    color: #777;
+
+    letter-spacing: 1.2px;
+
+    text-transform: uppercase;
+}
+/* =========================================
+   FINAL SIDEBAR LAYOUT FIX
+   NO CHAT / FOOTER OVERLAP
+========================================= */
+
+.sidebar {
+    position: relative !important;
+
+    height: 100vh !important;
+    max-height: 100vh !important;
+
+    display: flex !important;
+    flex-direction: column !important;
+
+    overflow: hidden !important;
+
+    box-sizing: border-box !important;
+}
+
+
+/* Search and Recent Chats stay at top */
+
+.searchBox {
+    flex-shrink: 0 !important;
+}
+
+.historyHeader {
+    flex-shrink: 0 !important;
+}
+
+
+/* =========================================
+   CHAT LIST
+========================================= */
+
+.history {
+    position: relative !important;
+
+    flex: 1 1 auto !important;
+
+    min-height: 0 !important;
+
+    height: auto !important;
+    max-height: none !important;
+
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+
+    box-sizing: border-box !important;
+
+    padding-bottom: 12px !important;
+
+    margin-bottom: 0 !important;
+}
+
+
+/* =========================================
+   FOOTER
+========================================= */
+
+.sidebarFooter {
+    position: relative !important;
+
+    left: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+
+    flex: 0 0 68px !important;
+
+    width: 100% !important;
+    height: 68px !important;
+
+    min-height: 68px !important;
+    max-height: 68px !important;
+
+    display: flex !important;
+
+    flex-direction: column !important;
+
+    align-items: center !important;
+    justify-content: center !important;
+
+    box-sizing: border-box !important;
+
+    background: #111111 !important;
+
+    border-top: 1px solid #292929 !important;
+
+    z-index: 50 !important;
+
+    padding: 6px 8px !important;
+}
+
+
+/* =========================================
+   FOOTER TEXT
+========================================= */
+
+.sidebarFooterText {
+    display: flex !important;
+
+    align-items: center !important;
+    justify-content: center !important;
+
+    gap: 7px !important;
+
+    margin: 0 !important;
+
+    line-height: 1 !important;
+
+    font-size: 14px !important;
+    font-weight: 700 !important;
+
+    white-space: nowrap !important;
+}
+
+.sidebarFooterSubtext {
+    margin-top: 5px !important;
+
+    font-size: 8px !important;
+
+    line-height: 1 !important;
+
+    letter-spacing: 1.3px !important;
+
+    color: #666 !important;
+
+    white-space: nowrap !important;
+}
+
+.sidebarFooterLine {
+    display: none !important;
+}
+
+
+/* =========================================
+   REMOVE OLD FOOTER
+========================================= */
+
+.sign {
+    display: none !important;
+}
+
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media (max-width: 700px) {
+
+    .sidebarFooter {
+        flex-basis: 62px !important;
+        height: 62px !important;
+        min-height: 62px !important;
+        max-height: 62px !important;
+    }
+
+    .sidebarFooterText {
+        font-size: 13px !important;
+    }
+
+    .sidebarFooterSubtext {
+        font-size: 7px !important;
     }
 }
