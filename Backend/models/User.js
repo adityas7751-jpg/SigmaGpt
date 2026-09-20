@@ -18,13 +18,44 @@ const userSchema = new mongoose.Schema(
 
         password: {
             type: String,
-            required: true
+            required: false
+        },
+
+        googleId: {
+            type: String,
+            unique: true,
+            sparse: true
         },
 
         plan: {
             type: String,
             enum: ["free", "premium"],
             default: "free"
+        },
+
+        razorpaySubscriptionId: {
+            type: String,
+            default: null
+        },
+
+        premiumSince: {
+            type: Date,
+            default: null
+        },
+
+        resetOtp: {
+            type: String,
+            default: null
+        },
+
+        resetOtpExpiry: {
+            type: Date,
+            default: null
+        },
+
+        resetOtpAttempts: {
+            type: Number,
+            default: 0
         }
     },
     {

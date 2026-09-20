@@ -1,5 +1,6 @@
 import "./Sidebar.css";
 import { useContext, useEffect, useState } from "react";
+import { API_URL } from "./config.js";
 import { MyContext } from "./MyContext.jsx";
 import { v1 as uuidv1 } from "uuid";
 
@@ -38,7 +39,7 @@ function Sidebar() {
     const getAllThreads = async () => {
         try {
             const response = await fetch(
-                "http://localhost:8080/api/thread"
+                `${API_URL}/api/thread`
             );
 
             if (!response.ok) {
@@ -89,7 +90,7 @@ function Sidebar() {
     const changeThread = async (newThreadId) => {
         try {
             const response = await fetch(
-                `http://localhost:8080/api/thread/${newThreadId}`
+                `${API_URL}/api/thread/${newThreadId}`
             );
 
             if (!response.ok) {
@@ -143,7 +144,7 @@ function Sidebar() {
     const deleteThread = async () => {
         try {
             const response = await fetch(
-                `http://localhost:8080/api/thread/${deleteThreadId}`,
+   `${API_URL}/api/thread/${deleteThreadId}`,
                 {
                     method: "DELETE"
                 }
@@ -214,7 +215,7 @@ function Sidebar() {
 
         try {
             const response = await fetch(
-                `http://localhost:8080/api/thread/${renameThreadId}`,
+                `${API_URL}/api/thread/${renameThreadId}`,
                 {
                     method: "PUT",
                     headers: {

@@ -1,0 +1,597 @@
+.authPage {
+    min-height: 100vh;
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    position: relative;
+    overflow: hidden;
+
+    padding: 24px;
+    box-sizing: border-box;
+
+    background:
+        radial-gradient(
+            circle at 50% -10%,
+            rgba(139, 92, 246, 0.20),
+            transparent 38%
+        ),
+        radial-gradient(
+            circle at 0% 100%,
+            rgba(124, 58, 237, 0.10),
+            transparent 35%
+        ),
+        radial-gradient(
+            circle at 100% 100%,
+            rgba(168, 85, 247, 0.08),
+            transparent 35%
+        ),
+        #0b0b0d;
+
+    color: #ffffff;
+}
+
+
+/* Background glow */
+
+.authPage::before {
+    content: "";
+
+    position: absolute;
+
+    width: 420px;
+    height: 420px;
+
+    top: -220px;
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    background: rgba(124, 58, 237, 0.16);
+
+    filter: blur(110px);
+
+    pointer-events: none;
+}
+
+
+/* Card */
+
+.authCard {
+    width: 100%;
+    max-width: 430px;
+
+    position: relative;
+    z-index: 2;
+
+    padding: 40px 40px 30px;
+
+    box-sizing: border-box;
+
+    border-radius: 24px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(34, 34, 38, 0.98),
+            rgba(20, 20, 23, 0.98)
+        );
+
+    border: 1px solid rgba(255, 255, 255, 0.09);
+
+    box-shadow:
+        0 30px 80px rgba(0, 0, 0, 0.55),
+        0 0 80px rgba(124, 58, 237, 0.08);
+
+    backdrop-filter: blur(18px);
+
+    animation: authCardAppear 0.45s ease;
+}
+
+
+@keyframes authCardAppear {
+
+    from {
+        opacity: 0;
+        transform: translateY(12px) scale(0.98);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+
+}
+
+
+/* Sigma logo */
+
+.authLogo {
+    width: 66px;
+    height: 66px;
+
+    margin: 0 auto 21px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 20px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #7c3aed,
+            #9333ea 55%,
+            #a855f7
+        );
+
+    color: white;
+
+    font-size: 34px;
+    font-weight: 800;
+
+    box-shadow:
+        0 14px 35px rgba(124, 58, 237, 0.35),
+        inset 0 1px 0 rgba(255, 255, 255, 0.22);
+}
+
+
+/* Heading */
+
+.authCard h1 {
+    margin: 0;
+
+    text-align: center;
+
+    color: #f7f7f8;
+
+    font-size: 29px;
+    line-height: 1.2;
+
+    font-weight: 700;
+
+    letter-spacing: -0.6px;
+}
+
+
+.authSubtitle {
+    margin: 9px 0 27px;
+
+    text-align: center;
+
+    color: #8f8f98;
+
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+
+/* Google button container */
+
+.googleLoginWrapper {
+    width: 100%;
+
+    min-height: 44px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin-bottom: 20px;
+
+    overflow: hidden;
+
+    border-radius: 10px;
+}
+
+
+/*
+   Google's own iframe controls the actual
+   button appearance. We give it a clean
+   container and use Google's outline theme.
+*/
+
+.googleLoginWrapper > div {
+    width: 100% !important;
+
+    max-width: 340px !important;
+
+    display: flex;
+
+    justify-content: center;
+}
+
+
+/* Google loading */
+
+.googleLoading {
+    margin-top: -8px;
+    margin-bottom: 16px;
+
+    text-align: center;
+
+    color: #9999a3;
+
+    font-size: 12px;
+}
+
+
+/* Divider */
+
+.authDivider {
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+
+    margin: 2px 0 21px;
+
+    color: #55555e;
+
+    font-size: 10px;
+}
+
+
+.authDivider::before,
+.authDivider::after {
+    content: "";
+
+    flex: 1;
+
+    height: 1px;
+
+    background: #333339;
+}
+
+
+.authDivider span {
+    color: #666671;
+
+    font-size: 10px;
+
+    font-weight: 600;
+
+    letter-spacing: 1px;
+}
+
+
+/* Input field */
+
+.authField {
+    margin-bottom: 17px;
+}
+
+
+.authField label {
+    display: block;
+
+    margin-bottom: 8px;
+
+    color: #d2d2d7;
+
+    font-size: 12px;
+
+    font-weight: 500;
+}
+
+
+.authField input {
+    width: 100%;
+
+    box-sizing: border-box;
+
+    padding: 13px 14px;
+
+    border: 1px solid #35353c;
+
+    border-radius: 11px;
+
+    background: #252529;
+
+    color: #ffffff;
+
+    font-size: 14px;
+
+    outline: none;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        background 0.2s ease;
+}
+
+
+.authField input::placeholder {
+    color: #696972;
+}
+
+
+.authField input:hover {
+    border-color: #484851;
+}
+
+
+.authField input:focus {
+    background: #29292e;
+
+    border-color: #8b5cf6;
+
+    box-shadow:
+        0 0 0 3px rgba(139, 92, 246, 0.12);
+}
+
+
+/*
+   Fix Chrome autofill blue/white background
+*/
+
+.authField input:-webkit-autofill,
+.authField input:-webkit-autofill:hover,
+.authField input:-webkit-autofill:focus {
+    -webkit-text-fill-color: #ffffff;
+
+    -webkit-box-shadow:
+        0 0 0 1000px #252529 inset;
+
+    box-shadow:
+        0 0 0 1000px #252529 inset;
+
+    border: 1px solid #35353c;
+
+    transition:
+        background-color 9999s ease-in-out 0s;
+}
+
+
+/* Error */
+
+.authError {
+    margin-bottom: 16px;
+
+    padding: 11px 12px;
+
+    border-radius: 9px;
+
+    background: rgba(239, 68, 68, 0.08);
+
+    border: 1px solid rgba(239, 68, 68, 0.20);
+
+    color: #f87171;
+
+    font-size: 12px;
+
+    line-height: 1.4;
+}
+
+
+/* Login button */
+
+.authButton {
+    width: 100%;
+
+    margin: 5px 0 0;
+
+    padding: 13px 16px;
+
+    border: none;
+
+    border-radius: 11px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #7c3aed,
+            #9333ea,
+            #a855f7
+        );
+
+    color: #ffffff;
+
+    font-size: 14px;
+
+    font-weight: 650;
+
+    cursor: pointer;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+.authButton:hover {
+    transform: translateY(-1px);
+
+    box-shadow:
+        0 12px 30px rgba(124, 58, 237, 0.35);
+}
+
+
+.authButton:active {
+    transform: translateY(0);
+}
+
+
+.authButton:disabled {
+    opacity: 0.55;
+
+    cursor: not-allowed;
+
+    transform: none;
+
+    box-shadow: none;
+}
+
+
+/* Signup switch */
+
+.authSwitch {
+    margin-top: 23px;
+
+    text-align: center;
+
+    color: #777781;
+
+    font-size: 12px;
+}
+
+
+.authSwitch button {
+    margin: 0;
+    padding: 0 0 0 3px;
+
+    border: none;
+
+    background: transparent;
+
+    color: #a855f7;
+
+    font-size: 12px;
+
+    font-weight: 500;
+
+    cursor: pointer;
+}
+
+
+.authSwitch button:hover {
+    color: #c084fc;
+
+    background: transparent;
+}
+
+
+/* Footer */
+
+.authFooter {
+    margin-top: 27px;
+
+    padding-top: 19px;
+
+    border-top: 1px solid rgba(255, 255, 255, 0.07);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 5px;
+
+    font-size: 10px;
+
+    color: #56565e;
+}
+
+
+.authFooter strong {
+    color: #85858e;
+
+    font-weight: 600;
+}
+
+
+/* Responsive */
+
+@media (max-width: 520px) {
+
+    .authPage {
+        padding: 16px;
+    }
+
+    .authCard {
+        max-width: 100%;
+
+        padding: 34px 24px 27px;
+
+        border-radius: 21px;
+    }
+
+    .authLogo {
+        width: 62px;
+        height: 62px;
+
+        border-radius: 18px;
+
+        font-size: 31px;
+    }
+
+    .authCard h1 {
+        font-size: 25px;
+    }
+
+}
+
+
+@media (max-width: 380px) {
+
+    .authCard {
+        padding: 30px 18px 24px;
+    }
+
+    .authCard h1 {
+        font-size: 23px;
+    }
+
+}
+.forgotPasswordRow {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: -8px;
+    margin-bottom: 16px;
+}
+
+.forgotPasswordRow button {
+    border: none;
+    background: transparent;
+    color: #a855f7;
+    font-size: 13px;
+    cursor: pointer;
+    padding: 0;
+}
+
+.forgotPasswordRow button:hover {
+    color: #c084fc;
+    text-decoration: underline;
+}
+
+.authSuccess {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px 12px;
+    margin-bottom: 14px;
+    border-radius: 8px;
+    background: rgba(34, 197, 94, 0.1);
+    border: 1px solid rgba(34, 197, 94, 0.2);
+    color: #86efac;
+    font-size: 13px;
+}
+
+.authBack {
+    display: flex;
+    justify-content: center;
+    margin-top: 18px;
+}
+
+.authBack button {
+    border: none;
+    background: transparent;
+    color: #a855f7;
+    cursor: pointer;
+    font-size: 13px;
+}
+
+.authBack button:hover {
+    color: #c084fc;
+}
+
+.authCard h1 {
+    margin-bottom: 8px;
+}
