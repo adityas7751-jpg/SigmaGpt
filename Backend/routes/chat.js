@@ -3,30 +3,33 @@ import jwt from "jsonwebtoken";
 
 import Thread from "../models/Thread.js";
 import User from "../models/User.js";
+
 import getOpenAIAPIResponse, {
     streamOpenAIAPIResponse
 } from "../utils/openai.js";
 
 const router = express.Router();
 
-// =========================
+// =====================================================
 // FREE USER DAILY AI LIMIT
-// =========================
+// =====================================================
 
 const FREE_DAILY_LIMIT = 10;
 
-// =========================
-// Temporary Usage Tracker
-// =========================
+// =====================================================
+// TEMPORARY USAGE TRACKER
+// =====================================================
 
 const usageTracker = new Map();
 
-// =========================
-// Get User From JWT
-// =========================
+// =====================================================
+// GET USER FROM JWT
+// =====================================================
 
 const getAuthenticatedUser = async (req) => {
+
     try {
+
         const authHeader =
             req.headers.authorization;
 
@@ -57,18 +60,20 @@ const getAuthenticatedUser = async (req) => {
         return user || null;
 
     } catch (err) {
+
         return null;
+
     }
 };
 
-// =========================
-// Create Clean Chat Title
-// =========================
+// =====================================================
+// CREATE CLEAN CHAT TITLE
+// =====================================================
 
 const createChatTitle = (message) => {
 
     const cleanedMessage =
-        message
+        String(message || "")
             .trim()
             .replace(/\s+/g, " ");
 
@@ -111,6 +116,7 @@ const createChatTitle = (message) => {
                     0,
                     lastSpace
                 );
+
         }
 
         title += "...";
@@ -123,64 +129,211 @@ const createChatTitle = (message) => {
     return title;
 };
 
-// =========================
-// Test
-// =========================
+// =====================================================
+// VALIDATE ATTACHMENT
+// =====================================================
 
-router.post("/test", async (req, res) => {
+const validateAttachment = (
+    attachment
+) => {
 
-    try {
-
-        const thread =
-            new Thread({
-                threadId: "abc",
-                title: "Testing New Thread2"
-            });
-
-        const response =
-            await thread.save();
-
-        return res.send(response);
-
-    } catch (err) {
-
-        console.log(err);
-
-        return res.status(500).json({
-            error: "Failed to save in DB"
-        });
+    if (!attachment) {
+        return null;
     }
-});
 
-// =========================
-// Get all threads
-// =========================
+    if (
+        typeof attachment !== "object"
+    ) {
 
-router.get("/thread", async (req, res) => {
+        throw new Error(
+            "Invalid attachment."
+        );
 
-    try {
+    }
 
-        const threads =
-            await Thread.find({})
-                .sort({
-                    updatedAt: -1
+    if (
+        !attachment.data ||
+        !attachment.mimeType
+    ) {
+
+        throw new Error(
+            "Attachment data is missing."
+        );
+
+    }
+
+    if (
+        typeof attachment.data !==
+        "string"
+    ) {
+
+        throw new Error(
+            "Invalid attachment data."
+        );
+
+    }
+
+    if (
+        typeof attachment.mimeType !==
+        "string"
+    ) {
+
+        throw new Error(
+            "Invalid attachment MIME type."
+        );
+
+    }
+
+    if (
+        attachment.data.length === 0
+    ) {
+
+        throw new Error(
+            "Attachment is empty."
+        );
+
+    }
+
+    // Approximately 30 MB raw-file limit
+    // after base64 conversion.
+    if (
+        attachment.data.length >
+        40 * 1024 * 1024
+    ) {
+
+        throw new Error(
+            "Attachment is too large. Please select a file smaller than 30 MB."
+        );
+
+    }
+
+    return attachment;
+};
+
+// =====================================================
+// GET USAGE
+// =====================================================
+
+const getUsage = (
+    user,
+    currentUsage
+) => {
+
+    const isPremium =
+        user?.plan === "premium";
+
+    if (isPremium) {
+
+        return {
+            used: null,
+            limit: null,
+            remaining: null
+        };
+
+    }
+
+    return {
+
+        used:
+            currentUsage,
+
+        limit:
+            FREE_DAILY_LIMIT,
+
+        remaining:
+            Math.max(
+                FREE_DAILY_LIMIT -
+                currentUsage,
+                0
+            )
+
+    };
+};
+
+// =====================================================
+// TEST ROUTE
+// =====================================================
+
+router.post(
+    "/test",
+    async (req, res) => {
+
+        try {
+
+            const thread =
+                new Thread({
+
+                    threadId:
+                        "abc",
+
+                    title:
+                        "Testing New Thread2"
+
                 });
 
-        return res.json(threads);
+            const response =
+                await thread.save();
 
-    } catch (err) {
+            return res.send(
+                response
+            );
 
-        console.log(err);
+        } catch (err) {
 
-        return res.status(500).json({
-            error: "Failed to fetch threads"
-        });
+            console.log(err);
+
+            return res.status(500).json({
+
+                error:
+                    "Failed to save in DB"
+
+            });
+
+        }
+
     }
-});
+);
 
-// =========================
-// Get messages of a thread
-// =========================
+// =====================================================
+// GET ALL THREADS
+// =====================================================
+
+router.get(
+    "/thread",
+    async (req, res) => {
+
+        try {
+
+            const threads =
+                await Thread
+                    .find({})
+                    .sort({
+                        updatedAt: -1
+                    });
+
+            return res.json(
+                threads
+            );
+
+        } catch (err) {
+
+            console.log(err);
+
+            return res.status(500).json({
+
+                error:
+                    "Failed to fetch threads"
+
+            });
+
+        }
+
+    }
+);
+
+// =====================================================
+// GET MESSAGES OF THREAD
+// =====================================================
 
 router.get(
     "/thread/:threadId",
@@ -200,9 +353,12 @@ router.get(
             if (!thread) {
 
                 return res.status(404).json({
+
                     error:
                         "Thread not found"
+
                 });
+
             }
 
             return res.json(
@@ -214,16 +370,20 @@ router.get(
             console.log(err);
 
             return res.status(500).json({
+
                 error:
                     "Failed to fetch chat"
+
             });
+
         }
+
     }
 );
 
-// =========================
-// Delete thread
-// =========================
+// =====================================================
+// DELETE THREAD
+// =====================================================
 
 router.delete(
     "/thread/:threadId",
@@ -243,14 +403,19 @@ router.delete(
             if (!deletedThread) {
 
                 return res.status(404).json({
+
                     error:
                         "Thread not found"
+
                 });
+
             }
 
             return res.status(200).json({
+
                 success:
                     "Thread deleted successfully"
+
             });
 
         } catch (err) {
@@ -258,16 +423,20 @@ router.delete(
             console.log(err);
 
             return res.status(500).json({
+
                 error:
                     "Failed to delete thread"
+
             });
+
         }
+
     }
 );
 
-// =========================
-// Rename thread
-// =========================
+// =====================================================
+// RENAME THREAD
+// =====================================================
 
 router.put(
     "/thread/:threadId",
@@ -281,12 +450,18 @@ router.put(
             title
         } = req.body;
 
-        if (!title || !title.trim()) {
+        if (
+            !title ||
+            !title.trim()
+        ) {
 
             return res.status(400).json({
+
                 error:
                     "Title is required"
+
             });
+
         }
 
         try {
@@ -299,9 +474,12 @@ router.put(
             if (!thread) {
 
                 return res.status(404).json({
+
                     error:
                         "Thread not found"
+
                 });
+
             }
 
             thread.title =
@@ -313,8 +491,12 @@ router.put(
             await thread.save();
 
             return res.status(200).json({
-                success: true,
+
+                success:
+                    true,
+
                 thread
+
             });
 
         } catch (err) {
@@ -325,16 +507,20 @@ router.put(
             );
 
             return res.status(500).json({
+
                 error:
                     "Failed to rename thread"
+
             });
+
         }
+
     }
 );
 
-// =========================
+// =====================================================
 // NORMAL CHAT
-// =========================
+// =====================================================
 
 router.post(
     "/chat",
@@ -342,52 +528,77 @@ router.post(
 
         const {
             threadId,
-            message
+            message,
+            attachment
         } = req.body;
 
+        // =================================================
+        // BASIC VALIDATION
+        // =================================================
+
+        if (!threadId) {
+
+            return res.status(400).json({
+
+                error:
+                    "Thread ID is required"
+
+            });
+
+        }
+
         if (
-            !threadId ||
-            !message ||
-            !message.trim()
+            (!message ||
+                !message.trim()) &&
+            !attachment
         ) {
 
             return res.status(400).json({
+
                 error:
-                    "Missing required fields"
+                    "Message or attachment is required"
+
             });
+
         }
 
         try {
 
-            // =========================
-            // Get Logged-in User
-            // =========================
+            // =============================================
+            // VALIDATE ATTACHMENT
+            // =============================================
+
+            const validAttachment =
+                validateAttachment(
+                    attachment
+                );
+
+            // =============================================
+            // AUTHENTICATED USER
+            // =============================================
 
             const user =
                 await getAuthenticatedUser(
                     req
                 );
 
-            // =========================
-            // Premium / Free Check
-            // =========================
+            // =============================================
+            // FREE / PREMIUM
+            // =============================================
 
             let currentUsage = 0;
-            let today = null;
+
             let trackerKey = null;
 
             if (user) {
 
                 const isPremium =
-                    user.plan === "premium";
-
-                // =========================
-                // Free User Limit
-                // =========================
+                    user.plan ===
+                    "premium";
 
                 if (!isPremium) {
 
-                    today =
+                    const today =
                         new Date()
                             .toISOString()
                             .split("T")[0];
@@ -400,43 +611,47 @@ router.post(
                             trackerKey
                         ) || 0;
 
-                    // =========================
+                    // =================================
                     // LIMIT REACHED
-                    // =========================
+                    // =================================
 
                     if (
                         currentUsage >=
                         FREE_DAILY_LIMIT
                     ) {
 
-                        return res.status(403).json({
+                        return res
+                            .status(403)
+                            .json({
 
-                            error:
-                                "You have reached your daily Free plan AI limit.",
+                                error:
+                                    "You have reached your daily Free plan AI limit.",
 
-                            limitReached:
-                                true,
+                                limitReached:
+                                    true,
 
-                            plan:
-                                "free",
+                                plan:
+                                    "free",
 
-                            dailyLimit:
-                                FREE_DAILY_LIMIT,
+                                dailyLimit:
+                                    FREE_DAILY_LIMIT,
 
-                            used:
-                                currentUsage,
+                                used:
+                                    currentUsage,
 
-                            remaining:
-                                0,
+                                remaining:
+                                    0,
 
-                            message:
-                                "Upgrade to Premium for unlimited AI usage."
-                        });
+                                message:
+                                    "Upgrade to Premium for unlimited AI usage."
+
+                            });
+
                     }
 
-                    // =========================
-                    // INCREMENT USAGE
-                    // =========================
+                    // =================================
+                    // INCREMENT
+                    // =================================
 
                     currentUsage += 1;
 
@@ -444,27 +659,42 @@ router.post(
                         trackerKey,
                         currentUsage
                     );
+
                 }
+
             }
 
-            // =========================
-            // Find Existing Thread
-            // =========================
+            // =============================================
+            // MESSAGE FOR THREAD
+            // =============================================
+
+            const userMessage =
+                message &&
+                message.trim()
+                    ? message.trim()
+                    : `Analyze the attached file: ${
+                        validAttachment?.name ||
+                        "document"
+                    }`;
+
+            // =============================================
+            // FIND THREAD
+            // =============================================
 
             let thread =
                 await Thread.findOne({
                     threadId
                 });
 
-            // =========================
-            // Create New Thread
-            // =========================
+            // =============================================
+            // CREATE THREAD
+            // =============================================
 
             if (!thread) {
 
                 const chatTitle =
                     createChatTitle(
-                        message
+                        userMessage
                     );
 
                 thread =
@@ -476,17 +706,27 @@ router.post(
                             chatTitle,
 
                         messages: [
+
                             {
                                 role:
                                     "user",
 
                                 content:
-                                    message.trim()
+                                    userMessage
+
                             }
+
                         ]
+
                     });
 
-            } else {
+            }
+
+            // =============================================
+            // EXISTING THREAD
+            // =============================================
+
+            else {
 
                 thread.messages.push({
 
@@ -494,22 +734,25 @@ router.post(
                         "user",
 
                     content:
-                        message.trim()
+                        userMessage
+
                 });
+
             }
 
-            // =========================
-            // AI Response
-            // =========================
+            // =============================================
+            // AI RESPONSE
+            // =============================================
 
             const assistantReply =
                 await getOpenAIAPIResponse(
-                    thread.messages
+                    thread.messages,
+                    validAttachment
                 );
 
-            // =========================
-            // Save AI Response
-            // =========================
+            // =============================================
+            // SAVE AI RESPONSE
+            // =============================================
 
             thread.messages.push({
 
@@ -518,6 +761,7 @@ router.post(
 
                 content:
                     assistantReply
+
             });
 
             thread.updatedAt =
@@ -525,38 +769,19 @@ router.post(
 
             await thread.save();
 
-            // =========================
-            // Usage Information
-            // =========================
-
-            const isPremium =
-                user?.plan === "premium";
+            // =============================================
+            // USAGE
+            // =============================================
 
             const usage =
-                isPremium
-                    ? {
-                        used: null,
-                        limit: null,
-                        remaining: null
-                    }
-                    : {
-                        used:
-                            currentUsage,
+                getUsage(
+                    user,
+                    currentUsage
+                );
 
-                        limit:
-                            FREE_DAILY_LIMIT,
-
-                        remaining:
-                            Math.max(
-                                FREE_DAILY_LIMIT -
-                                currentUsage,
-                                0
-                            )
-                    };
-
-            // =========================
-            // Response
-            // =========================
+            // =============================================
+            // RESPONSE
+            // =============================================
 
             return res.json({
 
@@ -569,6 +794,7 @@ router.post(
                         : "free",
 
                 usage
+
             });
 
         } catch (err) {
@@ -583,14 +809,17 @@ router.post(
                 error:
                     err.message ||
                     "Something went wrong"
+
             });
+
         }
+
     }
 );
 
-// =========================
+// =====================================================
 // STREAMING CHAT
-// =========================
+// =====================================================
 
 router.post(
     "/chat/stream",
@@ -598,48 +827,77 @@ router.post(
 
         const {
             threadId,
-            message
+            message,
+            attachment
         } = req.body;
 
+        // =================================================
+        // BASIC VALIDATION
+        // =================================================
+
+        if (!threadId) {
+
+            return res.status(400).json({
+
+                error:
+                    "Thread ID is required"
+
+            });
+
+        }
+
         if (
-            !threadId ||
-            !message ||
-            !message.trim()
+            (!message ||
+                !message.trim()) &&
+            !attachment
         ) {
 
             return res.status(400).json({
+
                 error:
-                    "Missing required fields"
+                    "Message or attachment is required"
+
             });
+
         }
 
         try {
 
-            // =========================
-            // Get Logged-in User
-            // =========================
+            // =============================================
+            // VALIDATE ATTACHMENT
+            // =============================================
+
+            const validAttachment =
+                validateAttachment(
+                    attachment
+                );
+
+            // =============================================
+            // GET USER
+            // =============================================
 
             const user =
                 await getAuthenticatedUser(
                     req
                 );
 
-            // =========================
-            // Premium / Free Check
-            // =========================
+            // =============================================
+            // USAGE
+            // =============================================
 
             let currentUsage = 0;
-            let today = null;
+
             let trackerKey = null;
 
             if (user) {
 
                 const isPremium =
-                    user.plan === "premium";
+                    user.plan ===
+                    "premium";
 
                 if (!isPremium) {
 
-                    today =
+                    const today =
                         new Date()
                             .toISOString()
                             .split("T")[0];
@@ -652,43 +910,47 @@ router.post(
                             trackerKey
                         ) || 0;
 
-                    // =========================
+                    // =================================
                     // LIMIT REACHED
-                    // =========================
+                    // =================================
 
                     if (
                         currentUsage >=
                         FREE_DAILY_LIMIT
                     ) {
 
-                        return res.status(403).json({
+                        return res
+                            .status(403)
+                            .json({
 
-                            error:
-                                "You have reached your daily Free plan AI limit.",
+                                error:
+                                    "You have reached your daily Free plan AI limit.",
 
-                            limitReached:
-                                true,
+                                limitReached:
+                                    true,
 
-                            plan:
-                                "free",
+                                plan:
+                                    "free",
 
-                            dailyLimit:
-                                FREE_DAILY_LIMIT,
+                                dailyLimit:
+                                    FREE_DAILY_LIMIT,
 
-                            used:
-                                currentUsage,
+                                used:
+                                    currentUsage,
 
-                            remaining:
-                                0,
+                                remaining:
+                                    0,
 
-                            message:
-                                "Upgrade to Premium for unlimited AI usage."
-                        });
+                                message:
+                                    "Upgrade to Premium for unlimited AI usage."
+
+                            });
+
                     }
 
-                    // =========================
+                    // =================================
                     // INCREMENT USAGE
-                    // =========================
+                    // =================================
 
                     currentUsage += 1;
 
@@ -696,27 +958,42 @@ router.post(
                         trackerKey,
                         currentUsage
                     );
+
                 }
+
             }
 
-            // =========================
-            // Find Existing Thread
-            // =========================
+            // =============================================
+            // USER MESSAGE
+            // =============================================
+
+            const userMessage =
+                message &&
+                message.trim()
+                    ? message.trim()
+                    : `Analyze the attached file: ${
+                        validAttachment?.name ||
+                        "document"
+                    }`;
+
+            // =============================================
+            // FIND THREAD
+            // =============================================
 
             let thread =
                 await Thread.findOne({
                     threadId
                 });
 
-            // =========================
-            // Create New Thread
-            // =========================
+            // =============================================
+            // CREATE THREAD
+            // =============================================
 
             if (!thread) {
 
                 const chatTitle =
                     createChatTitle(
-                        message
+                        userMessage
                     );
 
                 thread =
@@ -728,17 +1005,27 @@ router.post(
                             chatTitle,
 
                         messages: [
+
                             {
                                 role:
                                     "user",
 
                                 content:
-                                    message.trim()
+                                    userMessage
+
                             }
+
                         ]
+
                     });
 
-            } else {
+            }
+
+            // =============================================
+            // EXISTING THREAD
+            // =============================================
+
+            else {
 
                 thread.messages.push({
 
@@ -746,13 +1033,15 @@ router.post(
                         "user",
 
                     content:
-                        message.trim()
+                        userMessage
+
                 });
+
             }
 
-            // =========================
+            // =============================================
             // SSE HEADERS
-            // =========================
+            // =============================================
 
             res.status(200);
 
@@ -776,35 +1065,50 @@ router.post(
                 "no"
             );
 
-            if (typeof res.flushHeaders === "function") {
+            if (
+                typeof res.flushHeaders ===
+                "function"
+            ) {
+
                 res.flushHeaders();
+
             }
 
-            // =========================
-            // Keep Connection Alive
-            // =========================
+            // =============================================
+            // KEEP ALIVE
+            // =============================================
 
             const keepAlive =
-                setInterval(() => {
+                setInterval(
+                    () => {
 
-                    if (!res.writableEnded) {
-                        res.write(": ping\n\n");
-                    }
+                        if (
+                            !res.writableEnded
+                        ) {
 
-                }, 15000);
+                            res.write(
+                                ": ping\n\n"
+                            );
 
-            let assistantReply = "";
+                        }
 
-            // =========================
-            // Send Helper
-            // =========================
+                    },
+                    15000
+                );
+
+            // =============================================
+            // SSE HELPER
+            // =============================================
 
             const sendEvent = (
                 event,
                 data
             ) => {
 
-                if (res.writableEnded) {
+                if (
+                    res.writableEnded
+                ) {
+
                     return;
                 }
 
@@ -815,55 +1119,98 @@ router.post(
                 res.write(
                     `data: ${JSON.stringify(data)}\n\n`
                 );
+
             };
 
-            // =========================
-            // Start Streaming
-            // =========================
+            // =============================================
+            // START EVENT
+            // =============================================
 
             sendEvent(
                 "start",
                 {
+
                     plan:
                         user
                             ? user.plan
-                            : "free"
+                            : "free",
+
+                    attachment:
+                        validAttachment
+                            ? {
+                                name:
+                                    validAttachment.name ||
+                                    "file",
+
+                                mimeType:
+                                    validAttachment.mimeType
+                            }
+                            : null
+
                 }
             );
 
-            // =========================
-            // Gemini Stream
-            // =========================
+            // =============================================
+            // AI STREAM
+            // =============================================
 
-            await streamOpenAIAPIResponse(
-                thread.messages,
-                (chunk) => {
+            let assistantReply = "";
 
-                    assistantReply += chunk;
+            try {
 
-                    sendEvent(
-                        "chunk",
-                        {
-                            text: chunk
-                        }
-                    );
-                }
-            );
+                await streamOpenAIAPIResponse(
 
-            // =========================
-            // Validate Response
-            // =========================
+                    thread.messages,
 
-            if (!assistantReply.trim()) {
+                    (chunk) => {
+
+                        assistantReply +=
+                            chunk;
+
+                        sendEvent(
+                            "chunk",
+                            {
+                                text:
+                                    chunk
+                            }
+                        );
+
+                    },
+
+                    validAttachment
+
+                );
+
+            } catch (
+                streamError
+            ) {
+
+                console.log(
+                    "Gemini streaming error:",
+                    streamError
+                );
+
+                throw streamError;
+
+            }
+
+            // =============================================
+            // EMPTY RESPONSE
+            // =============================================
+
+            if (
+                !assistantReply.trim()
+            ) {
 
                 throw new Error(
                     "AI returned an empty response."
                 );
+
             }
 
-            // =========================
-            // Save Assistant Response
-            // =========================
+            // =============================================
+            // SAVE ASSISTANT MESSAGE
+            // =============================================
 
             thread.messages.push({
 
@@ -872,6 +1219,7 @@ router.post(
 
                 content:
                     assistantReply
+
             });
 
             thread.updatedAt =
@@ -879,42 +1227,24 @@ router.post(
 
             await thread.save();
 
-            // =========================
-            // Usage Information
-            // =========================
-
-            const isPremium =
-                user?.plan === "premium";
+            // =============================================
+            // USAGE
+            // =============================================
 
             const usage =
-                isPremium
-                    ? {
-                        used: null,
-                        limit: null,
-                        remaining: null
-                    }
-                    : {
-                        used:
-                            currentUsage,
+                getUsage(
+                    user,
+                    currentUsage
+                );
 
-                        limit:
-                            FREE_DAILY_LIMIT,
-
-                        remaining:
-                            Math.max(
-                                FREE_DAILY_LIMIT -
-                                currentUsage,
-                                0
-                            )
-                    };
-
-            // =========================
-            // Stream Complete
-            // =========================
+            // =============================================
+            // DONE EVENT
+            // =============================================
 
             sendEvent(
                 "done",
                 {
+
                     plan:
                         user
                             ? user.plan
@@ -924,15 +1254,24 @@ router.post(
 
                     reply:
                         assistantReply
+
                 }
             );
+
+            // =============================================
+            // CLEANUP
+            // =============================================
 
             clearInterval(
                 keepAlive
             );
 
-            if (!res.writableEnded) {
+            if (
+                !res.writableEnded
+            ) {
+
                 res.end();
+
             }
 
         } catch (err) {
@@ -942,21 +1281,13 @@ router.post(
                 err
             );
 
-            // =========================
-            // Send Error To Frontend
-            // =========================
+            // ===========================================
+            // ERROR EVENT
+            // ===========================================
 
-            try {
-
-                if (!res.headersSent) {
-
-                    return res.status(500).json({
-                        error:
-                            err.message ||
-                            "Something went wrong"
-                    });
-
-                }
+            if (
+                res.headersSent
+            ) {
 
                 res.write(
                     `event: error\n`
@@ -972,14 +1303,22 @@ router.post(
 
                 res.end();
 
-            } catch (streamError) {
+            } else {
 
-                console.log(
-                    "Stream close error:",
-                    streamError
-                );
+                return res
+                    .status(500)
+                    .json({
+
+                        error:
+                            err.message ||
+                            "Something went wrong"
+
+                    });
+
             }
+
         }
+
     }
 );
 

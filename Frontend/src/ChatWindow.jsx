@@ -371,98 +371,295 @@ function ChatWindow() {
   }, [user]);
 
   // ==========================================
+  // FILE TO BASE64
+  // ==========================================
+
+  const fileToBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+
+      reader.onload = () => {
+        try {
+          const result = reader.result;
+
+          if (typeof result !== "string") {
+            reject(
+              new Error("Unable to read the selected file.")
+            );
+            return;
+          }
+
+          const commaIndex = result.indexOf(",");
+
+          if (commaIndex === -1) {
+            reject(
+              new Error("Invalid file data.")
+            );
+            return;
+          }
+
+          const base64 = result.substring(
+            commaIndex + 1
+          );
+
+          if (!base64) {
+            reject(
+              new Error("Selected file is empty.")
+            );
+            return;
+          }
+
+          resolve(base64);
+        } catch (error) {
+          reject(error);
+        }
+      };
+
+      reader.onerror = () => {
+        reject(
+          new Error(
+            "Failed to read the selected file."
+          )
+        );
+      };
+
+      reader.readAsDataURL(file);
+    });
+  };
+
+  // ==========================================
   // GET AI REPLY - STREAMING
   // ==========================================
 
   const getReply = async () => {
-    const trimmedPrompt = prompt.trim();
+
+    const trimmedPrompt =
+      prompt.trim();
 
     if (
-      (!trimmedPrompt && !selectedFile) ||
+      (!trimmedPrompt &&
+        !selectedFile) ||
       loading
     ) {
       return;
     }
 
-    if (selectedFile) {
+    // ========================================
+    // LOGIN CHECK
+    // ========================================
+
+    if (!user) {
+
       alert(
-        "Attachment selected successfully. File-to-AI processing will be connected next."
+        "Please login to use SigmaGPT."
       );
+
       return;
     }
 
-    if (!user) {
-      alert("Please login to use SigmaGPT.");
-      return;
-    }
+    // ========================================
+    // FREE PLAN LIMIT
+    // ========================================
 
     if (
       user.plan !== "premium" &&
       usage.used >= 10
     ) {
+
       setLimitReached(true);
+
       return;
     }
 
     try {
+
       setLoading(true);
+
       setNewChat(false);
+
       setReply("");
 
-      const token =
-        localStorage.getItem("sigmagpt-token");
+      // ======================================
+      // GET TOKEN
+      // ======================================
 
-      const response = await fetch(
-        `${API_URL}/api/chat/stream`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            ...(token
-              ? {
-                  Authorization:
-                    `Bearer ${token}`,
-                }
-              : {}),
-          },
-          body: JSON.stringify({
-            message: trimmedPrompt,
-            threadId: currThreadId,
-          }),
+      const token =
+        localStorage.getItem(
+          "sigmagpt-token"
+        );
+
+      // ======================================
+      // PREPARE ATTACHMENT
+      // ======================================
+
+      let attachment = null;
+
+      if (selectedFile) {
+
+        const maxSize =
+          20 * 1024 * 1024;
+
+        if (
+          selectedFile.size >
+          maxSize
+        ) {
+
+          throw new Error(
+            "File size must be 20 MB or less."
+          );
+
         }
-      );
+
+        const base64Data =
+          await fileToBase64(
+            selectedFile
+          );
+
+        attachment = {
+
+          name:
+            selectedFile.name,
+
+          mimeType:
+            selectedFile.type ||
+            "application/octet-stream",
+
+          data:
+            base64Data
+
+        };
+
+        console.log(
+          "SigmaGPT attachment:",
+          selectedFile.name,
+          selectedFile.type,
+          `${(
+            selectedFile.size /
+            1024 /
+            1024
+          ).toFixed(2)} MB`
+        );
+
+      }
+
+      // ======================================
+      // MESSAGE
+      // ======================================
+
+      const userMessage =
+        trimmedPrompt ||
+        (
+          selectedFile
+            ? `Analyze the attached file: ${selectedFile.name}`
+            : ""
+        );
+
+      // ======================================
+      // STREAMING REQUEST
+      // ======================================
+
+      const response =
+        await fetch(
+          `${API_URL}/api/chat/stream`,
+          {
+
+            method: "POST",
+
+            headers: {
+
+              "Content-Type":
+                "application/json",
+
+              ...(token
+                ? {
+                    Authorization:
+                      `Bearer ${token}`
+                  }
+                : {})
+
+            },
+
+            body:
+              JSON.stringify({
+
+                message:
+                  userMessage,
+
+                threadId:
+                  currThreadId,
+
+                attachment
+
+              })
+
+          }
+        );
+
+      // ======================================
+      // SERVER ERROR
+      // ======================================
 
       if (!response.ok) {
+
         let data = {};
 
         try {
-          data = await response.json();
+
+          data =
+            await response.json();
+
         } catch {
           data = {};
         }
 
-        if (data.limitReached) {
+        if (
+          response.status === 403 &&
+          data.limitReached
+        ) {
+
           setUsage({
-            used: data.used ?? 10,
-            limit: data.dailyLimit ?? 10,
-            remaining: data.remaining ?? 0,
+
+            used:
+              data.used ??
+              10,
+
+            limit:
+              data.dailyLimit ??
+              10,
+
+            remaining:
+              data.remaining ??
+              0
+
           });
 
           setLimitReached(true);
+
           return;
         }
 
         throw new Error(
           data.error ||
-            "Unable to get AI response."
+          "Unable to get AI response."
         );
+
       }
 
+      // ======================================
+      // STREAM CHECK
+      // ======================================
+
       if (!response.body) {
+
         throw new Error(
           "Streaming is not supported by this browser."
         );
+
       }
+
+      // ======================================
+      // READ STREAM
+      // ======================================
 
       const reader =
         response.body.getReader();
@@ -471,75 +668,142 @@ function ChatWindow() {
         new TextDecoder("utf-8");
 
       let buffer = "";
+
       let streamedText = "";
+
       let streamStarted = false;
 
+      let streamFinished = false;
+
+      // ======================================
+      // ADD USER + EMPTY ASSISTANT MESSAGE
+      // ======================================
+
       setPrevChats((prev) => [
+
         ...(prev || []),
+
         {
-          role: "user",
-          content: trimmedPrompt,
+
+          role:
+            "user",
+
+          content:
+            userMessage
+
         },
+
         {
-          role: "assistant",
-          content: "",
-        },
+
+          role:
+            "assistant",
+
+          content:
+            ""
+
+        }
+
       ]);
+
+      // ======================================
+      // UPDATE ASSISTANT MESSAGE
+      // ======================================
 
       const updateAssistantMessage = (
         text
       ) => {
+
         setReply(text);
 
-        setPrevChats((prev) => {
-          if (!prev || prev.length === 0) {
-            return prev;
+        setPrevChats(
+          (prev) => {
+
+            if (
+              !prev ||
+              prev.length === 0
+            ) {
+
+              return prev;
+
+            }
+
+            const updated =
+              [...prev];
+
+            const lastIndex =
+              updated.length - 1;
+
+            if (
+              updated[lastIndex]?.role ===
+              "assistant"
+            ) {
+
+              updated[lastIndex] = {
+
+                ...updated[lastIndex],
+
+                content:
+                  text
+
+              };
+
+            }
+
+            return updated;
+
           }
+        );
 
-          const updated = [...prev];
-          const lastIndex =
-            updated.length - 1;
-
-          if (
-            updated[lastIndex]?.role ===
-            "assistant"
-          ) {
-            updated[lastIndex] = {
-              ...updated[lastIndex],
-              content: text,
-            };
-          }
-
-          return updated;
-        });
       };
+
+      // ======================================
+      // PROCESS SSE EVENT
+      // ======================================
 
       const processEvent = (
         eventBlock
       ) => {
-        if (!eventBlock.trim()) {
+
+        if (
+          !eventBlock ||
+          !eventBlock.trim()
+        ) {
+
           return;
+
         }
 
         const lines =
           eventBlock.split("\n");
 
-        let eventName = "message";
-        let dataText = "";
+        let eventName =
+          "message";
 
-        for (const line of lines) {
+        let dataText =
+          "";
+
+        for (
+          const line of lines
+        ) {
+
           const trimmedLine =
             line.trim();
+
+          if (!trimmedLine) {
+            continue;
+          }
 
           if (
             trimmedLine.startsWith(
               "event:"
             )
           ) {
+
             eventName =
               trimmedLine
                 .substring(6)
                 .trim();
+
           }
 
           if (
@@ -547,11 +811,14 @@ function ChatWindow() {
               "data:"
             )
           ) {
+
             dataText +=
               trimmedLine
                 .substring(5)
                 .trim();
+
           }
+
         }
 
         if (!dataText) {
@@ -561,82 +828,148 @@ function ChatWindow() {
         let data;
 
         try {
+
           data =
-            JSON.parse(dataText);
+            JSON.parse(
+              dataText
+            );
+
         } catch (error) {
+
           console.log(
             "SSE JSON parse warning:",
             error
           );
+
           return;
+
         }
 
-        if (
-          eventName === "start"
-        ) {
-          streamStarted = true;
-          return;
-        }
+        // ====================================
+        // START
+        // ====================================
 
         if (
-          eventName === "chunk"
+          eventName ===
+          "start"
         ) {
+
+          streamStarted =
+            true;
+
+          return;
+
+        }
+
+        // ====================================
+        // CHUNK
+        // ====================================
+
+        if (
+          eventName ===
+          "chunk"
+        ) {
+
           const chunk =
-            data?.text || "";
+            data?.text ||
+            "";
 
           if (chunk) {
-            streamedText += chunk;
+
+            streamedText +=
+              chunk;
 
             updateAssistantMessage(
               streamedText
             );
+
           }
 
           return;
+
         }
 
+        // ====================================
+        // DONE
+        // ====================================
+
         if (
-          eventName === "done"
+          eventName ===
+          "done"
         ) {
-          if (data?.reply) {
+
+          streamFinished =
+            true;
+
+          if (
+            data?.reply
+          ) {
+
             streamedText =
               data.reply;
 
             updateAssistantMessage(
               streamedText
             );
+
           }
 
-          if (data?.usage) {
-            setUsage(data.usage);
+          if (
+            data?.usage
+          ) {
+
+            setUsage(
+              data.usage
+            );
 
             if (
               data.usage.remaining ===
                 0 &&
-              user.plan !== "premium"
+              user.plan !==
+                "premium"
             ) {
-              setLimitReached(true);
+
+              setLimitReached(
+                true
+              );
+
             }
+
           }
 
           return;
+
         }
+
+        // ====================================
+        // ERROR
+        // ====================================
 
         if (
-          eventName === "error"
+          eventName ===
+          "error"
         ) {
+
           throw new Error(
             data?.error ||
-              "AI streaming failed."
+            "AI streaming failed."
           );
+
         }
+
       };
 
+      // ======================================
+      // STREAM LOOP
+      // ======================================
+
       while (true) {
+
         const {
           value,
-          done,
-        } = await reader.read();
+          done
+        } =
+          await reader.read();
 
         if (done) {
           break;
@@ -646,80 +979,154 @@ function ChatWindow() {
           decoder.decode(
             value,
             {
-              stream: true,
+              stream:
+                true
             }
           );
 
         const events =
-          buffer.split("\n\n");
+          buffer.split(
+            "\n\n"
+          );
 
         buffer =
-          events.pop() || "";
+          events.pop() ||
+          "";
 
         for (
-          const eventBlock of events
+          const eventBlock
+          of events
         ) {
+
           processEvent(
             eventBlock
           );
+
         }
+
       }
+
+      // ======================================
+      // PROCESS FINAL BUFFER
+      // ======================================
 
       buffer +=
         decoder.decode();
 
-      if (buffer.trim()) {
-        processEvent(buffer);
+      if (
+        buffer.trim()
+      ) {
+
+        processEvent(
+          buffer
+        );
+
+      }
+
+      // ======================================
+      // VALIDATE RESPONSE
+      // ======================================
+
+      if (
+        !streamStarted
+      ) {
+
+        throw new Error(
+          "AI streaming did not start."
+        );
+
       }
 
       if (
-        !streamStarted ||
         !streamedText.trim()
       ) {
+
         throw new Error(
           "AI returned an empty response."
         );
+
       }
+
+      // ======================================
+      // FINAL REPLY
+      // ======================================
+
+      setReply(
+        streamedText
+      );
+
+      // ======================================
+      // CLEAR INPUT
+      // ======================================
 
       setPrompt("");
 
+      setSelectedFile(null);
+
+      if (
+        fileInputRef.current
+      ) {
+
+        fileInputRef.current.value =
+          "";
+
+      }
+
     } catch (err) {
+
       console.log(
         "Streaming chat error:",
         err
       );
 
-      setPrevChats((prev) => {
-        if (
-          !prev ||
-          prev.length === 0
-        ) {
-          return prev;
+      // ======================================
+      // REMOVE EMPTY ASSISTANT MESSAGE
+      // ======================================
+
+      setPrevChats(
+        (prev) => {
+
+          if (
+            !prev ||
+            prev.length === 0
+          ) {
+
+            return prev;
+
+          }
+
+          const updated =
+            [...prev];
+
+          const lastIndex =
+            updated.length - 1;
+
+          if (
+            updated[lastIndex]?.role ===
+              "assistant" &&
+            !updated[lastIndex]?.content
+          ) {
+
+            updated.pop();
+
+          }
+
+          return updated;
+
         }
-
-        const updated = [...prev];
-        const lastIndex =
-          updated.length - 1;
-
-        if (
-          updated[lastIndex]?.role ===
-            "assistant" &&
-          !updated[lastIndex]?.content
-        ) {
-          updated.pop();
-        }
-
-        return updated;
-      });
+      );
 
       alert(
         err.message ||
-          "Something went wrong."
+        "Something went wrong."
       );
 
     } finally {
+
       setLoading(false);
+
     }
+
   };
 
   // ==========================================

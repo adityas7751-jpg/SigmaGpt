@@ -1,5 +1,9 @@
 import "dotenv/config";
 
+// =====================================================
+// GEMINI MODELS
+// =====================================================
+
 const MODELS = [
     "gemini-3.5-flash-lite",
     "gemini-3.6-flash"
@@ -7,60 +11,236 @@ const MODELS = [
 
 const MAX_RETRIES_PER_MODEL = 1;
 
+// =====================================================
+// SLEEP
+// =====================================================
+
 const sleep = (ms) =>
-    new Promise((resolve) => setTimeout(resolve, ms));
+    new Promise((resolve) =>
+        setTimeout(resolve, ms)
+    );
 
-const buildContents = (messages) => {
+// =====================================================
+// BUILD GEMINI CONTENTS
+// Supports:
+// - Normal text
+// - PDF
+// - Images
+// - TXT
+// - CSV
+// - Other supported MIME files
+// =====================================================
 
-    return messages
-        .filter(
-            (message) =>
-                message &&
-                message.content &&
-                String(message.content).trim()
-        )
-        .map((message) => ({
-            role:
-                message.role === "assistant"
-                    ? "model"
-                    : "user",
+const buildContents = (
+    messages,
+    attachment = null
+) => {
 
-            parts: [
-                {
-                    text: String(message.content)
+    const contents =
+        messages
+            .filter(
+                (message) =>
+                    message &&
+                    message.content &&
+                    String(
+                        message.content
+                    ).trim()
+            )
+            .map((message) => ({
+
+                role:
+                    message.role ===
+                    "assistant"
+                        ? "model"
+                        : "user",
+
+                parts: [
+                    {
+                        text:
+                            String(
+                                message.content
+                            )
+                    }
+                ]
+
+            }));
+
+    // =================================================
+    // ADD FILE TO LAST USER MESSAGE
+    // =================================================
+
+    if (
+        attachment &&
+        attachment.data &&
+        attachment.mimeType &&
+        contents.length > 0
+    ) {
+
+        const lastContent =
+            contents[
+                contents.length - 1
+            ];
+
+        if (
+            lastContent.role ===
+            "user"
+        ) {
+
+            lastContent.parts.push({
+
+                inlineData: {
+
+                    mimeType:
+                        attachment.mimeType,
+
+                    data:
+                        attachment.data
+
                 }
-            ]
-        }));
+
+            });
+
+        }
+
+    }
+
+    return contents;
+};
+
+// =====================================================
+// VALIDATE ATTACHMENT
+// =====================================================
+
+const validateAttachment = (
+    attachment
+) => {
+
+    if (!attachment) {
+        return;
+    }
+
+    if (
+        !attachment.data ||
+        !attachment.mimeType
+    ) {
+
+        throw new Error(
+            "Invalid attachment data."
+        );
+    }
+
+    // Browser se MIME type nahi aaye
+    // to PDF default kar sakte hain
+    if (
+        typeof attachment.mimeType !==
+        "string"
+    ) {
+
+        throw new Error(
+            "Invalid attachment MIME type."
+        );
+    }
+
+    if (
+        typeof attachment.data !==
+        "string"
+    ) {
+
+        throw new Error(
+            "Invalid attachment encoding."
+        );
+    }
+
+    // Base64 data sanity check
+    if (
+        attachment.data.length === 0
+    ) {
+
+        throw new Error(
+            "Attachment is empty."
+        );
+    }
+
+    // Maximum inline file size:
+    // approximately 30 MB base64 payload
+    if (
+        attachment.data.length >
+        40 * 1024 * 1024
+    ) {
+
+        throw new Error(
+            "Attachment is too large. Please use a file smaller than 30 MB."
+        );
+    }
+};
+
+// =====================================================
+// GET API KEY
+// =====================================================
+
+const getApiKey = () => {
+
+    const apiKey =
+        process.env.GEMINI_API_KEY;
+
+    if (!apiKey) {
+
+        throw new Error(
+            "Gemini API key is not configured."
+        );
+    }
+
+    return apiKey;
 };
 
 // =====================================================
 // NORMAL RESPONSE
 // =====================================================
 
-const getOpenAIAPIResponse = async (messages) => {
+const getOpenAIAPIResponse = async (
+    messages,
+    attachment = null
+) => {
 
     const apiKey =
-        process.env.GEMINI_API_KEY;
+        getApiKey();
 
-    if (!apiKey) {
-        throw new Error(
-            "Gemini API key is not configured."
-        );
-    }
+    // =================================================
+    // VALIDATE MESSAGES
+    // =================================================
 
     if (
         !Array.isArray(messages) ||
         messages.length === 0
     ) {
+
         throw new Error(
             "No conversation messages were provided."
         );
     }
 
-    const contents =
-        buildContents(messages);
+    // =================================================
+    // VALIDATE FILE
+    // =================================================
 
-    if (contents.length === 0) {
+    validateAttachment(
+        attachment
+    );
+
+    // =================================================
+    // BUILD CONTENTS
+    // =================================================
+
+    const contents =
+        buildContents(
+            messages,
+            attachment
+        );
+
+    if (
+        contents.length === 0
+    ) {
+
         throw new Error(
             "No valid conversation content was provided."
         );
@@ -68,11 +248,18 @@ const getOpenAIAPIResponse = async (messages) => {
 
     let lastError = null;
 
-    for (const model of MODELS) {
+    // =================================================
+    // TRY MODELS
+    // =================================================
+
+    for (
+        const model of MODELS
+    ) {
 
         for (
             let attempt = 1;
-            attempt <= MAX_RETRIES_PER_MODEL;
+            attempt <=
+            MAX_RETRIES_PER_MODEL;
             attempt++
         ) {
 
@@ -82,42 +269,76 @@ const getOpenAIAPIResponse = async (messages) => {
                     `Gemini request: ${model} | attempt ${attempt}`
                 );
 
+                if (attachment) {
+
+                    console.log(
+                        `Gemini attachment: ${attachment.name || "file"} | ${attachment.mimeType}`
+                    );
+
+                }
+
+                // =====================================
+                // API REQUEST
+                // =====================================
+
                 const response =
                     await fetch(
+
                         `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`,
+
                         {
-                            method: "POST",
+
+                            method:
+                                "POST",
 
                             headers: {
+
                                 "Content-Type":
                                     "application/json",
 
                                 "x-goog-api-key":
                                     apiKey
+
                             },
 
-                            body: JSON.stringify({
+                            body:
+                                JSON.stringify({
 
-                                contents,
+                                    contents,
 
-                                generationConfig: {
+                                    generationConfig: {
 
-                                    thinkingConfig: {
-                                        thinkingLevel:
-                                            "minimal"
-                                    },
+                                        thinkingConfig:
+                                            {
+                                                thinkingLevel:
+                                                    "minimal"
+                                            },
 
-                                    maxOutputTokens:
-                                        500
-                                }
-                            })
+                                        maxOutputTokens:
+                                            500
+
+                                    }
+
+                                })
+
                         }
+
                     );
+
+                // =====================================
+                // RESPONSE JSON
+                // =====================================
 
                 const data =
                     await response.json();
 
-                if (response.ok) {
+                // =====================================
+                // SUCCESS
+                // =====================================
+
+                if (
+                    response.ok
+                ) {
 
                     const text =
                         data
@@ -125,12 +346,15 @@ const getOpenAIAPIResponse = async (messages) => {
                             ?.content?.parts
                             ?.map(
                                 (part) =>
-                                    part.text || ""
+                                    part?.text ||
+                                    ""
                             )
                             .join("")
                             .trim();
 
-                    if (text) {
+                    if (
+                        text
+                    ) {
 
                         console.log(
                             `Gemini success: ${model}`
@@ -144,13 +368,21 @@ const getOpenAIAPIResponse = async (messages) => {
                             "Gemini returned an empty response."
                         );
 
-                } else {
+                }
+
+                // =====================================
+                // API ERROR
+                // =====================================
+
+                else {
 
                     const status =
                         response.status;
 
                     const errorMessage =
-                        data?.error?.message ||
+                        data
+                            ?.error
+                            ?.message ||
                         "Unknown Gemini API error.";
 
                     console.log(
@@ -164,6 +396,10 @@ const getOpenAIAPIResponse = async (messages) => {
                             errorMessage
                         );
 
+                    // =================================
+                    // RETRYABLE ERRORS
+                    // =================================
+
                     const retryable =
                         [
                             429,
@@ -171,11 +407,14 @@ const getOpenAIAPIResponse = async (messages) => {
                             502,
                             503,
                             504
-                        ].includes(status);
+                        ].includes(
+                            status
+                        );
 
                     if (
                         !retryable
                     ) {
+
                         break;
                     }
 
@@ -183,11 +422,23 @@ const getOpenAIAPIResponse = async (messages) => {
                         attempt <
                         MAX_RETRIES_PER_MODEL
                     ) {
-                        await sleep(300);
+
+                        await sleep(
+                            300
+                        );
                     }
+
                 }
 
-            } catch (error) {
+            }
+
+            // =========================================
+            // REQUEST EXCEPTION
+            // =========================================
+
+            catch (
+                error
+            ) {
 
                 console.log(
                     `Gemini request exception for ${model}:`,
@@ -201,18 +452,31 @@ const getOpenAIAPIResponse = async (messages) => {
                     attempt <
                     MAX_RETRIES_PER_MODEL
                 ) {
-                    await sleep(300);
+
+                    await sleep(
+                        300
+                    );
                 }
+
             }
+
         }
 
         console.log(
             `Trying next Gemini model after ${model}...`
         );
+
     }
 
-    throw new Error(
-        "AI service is temporarily busy. Please try again."
+    // =================================================
+    // ALL MODELS FAILED
+    // =================================================
+
+    throw (
+        lastError ||
+        new Error(
+            "AI service is temporarily busy. Please try again."
+        )
     );
 };
 
@@ -222,39 +486,63 @@ const getOpenAIAPIResponse = async (messages) => {
 
 const streamOpenAIAPIResponse = async (
     messages,
-    onChunk
+    onChunk,
+    attachment = null
 ) => {
 
     const apiKey =
-        process.env.GEMINI_API_KEY;
+        getApiKey();
 
-    if (!apiKey) {
-        throw new Error(
-            "Gemini API key is not configured."
-        );
-    }
+    // =================================================
+    // VALIDATE MESSAGES
+    // =================================================
 
     if (
         !Array.isArray(messages) ||
         messages.length === 0
     ) {
+
         throw new Error(
             "No conversation messages were provided."
         );
     }
 
+    // =================================================
+    // VALIDATE CALLBACK
+    // =================================================
+
     if (
-        typeof onChunk !== "function"
+        typeof onChunk !==
+        "function"
     ) {
+
         throw new Error(
             "Streaming callback is required."
         );
     }
 
-    const contents =
-        buildContents(messages);
+    // =================================================
+    // VALIDATE ATTACHMENT
+    // =================================================
 
-    if (contents.length === 0) {
+    validateAttachment(
+        attachment
+    );
+
+    // =================================================
+    // BUILD CONTENTS
+    // =================================================
+
+    const contents =
+        buildContents(
+            messages,
+            attachment
+        );
+
+    if (
+        contents.length === 0
+    ) {
+
         throw new Error(
             "No valid conversation content was provided."
         );
@@ -262,7 +550,13 @@ const streamOpenAIAPIResponse = async (
 
     let lastError = null;
 
-    for (const model of MODELS) {
+    // =================================================
+    // STREAM USING MODELS
+    // =================================================
+
+    for (
+        const model of MODELS
+    ) {
 
         try {
 
@@ -270,13 +564,32 @@ const streamOpenAIAPIResponse = async (
                 `Gemini STREAM request: ${model}`
             );
 
+            if (
+                attachment
+            ) {
+
+                console.log(
+                    `Gemini STREAM attachment: ${attachment.name || "file"} | ${attachment.mimeType}`
+                );
+
+            }
+
+            // =========================================
+            // STREAM REQUEST
+            // =========================================
+
             const response =
                 await fetch(
+
                     `https://generativelanguage.googleapis.com/v1beta/models/${model}:streamGenerateContent?alt=sse`,
+
                     {
-                        method: "POST",
+
+                        method:
+                            "POST",
 
                         headers: {
+
                             "Content-Type":
                                 "application/json",
 
@@ -285,27 +598,40 @@ const streamOpenAIAPIResponse = async (
 
                             "Accept":
                                 "text/event-stream"
+
                         },
 
-                        body: JSON.stringify({
+                        body:
+                            JSON.stringify({
 
-                            contents,
+                                contents,
 
-                            generationConfig: {
+                                generationConfig: {
 
-                                thinkingConfig: {
-                                    thinkingLevel:
-                                        "minimal"
-                                },
+                                    thinkingConfig:
+                                        {
+                                            thinkingLevel:
+                                                "minimal"
+                                        },
 
-                                maxOutputTokens:
-                                    500
-                            }
-                        })
+                                    maxOutputTokens:
+                                        500
+
+                                }
+
+                            })
+
                     }
+
                 );
 
-            if (!response.ok) {
+            // =========================================
+            // API ERROR
+            // =========================================
+
+            if (
+                !response.ok
+            ) {
 
                 const errorText =
                     await response.text();
@@ -333,7 +659,10 @@ const streamOpenAIAPIResponse = async (
                         response.status
                     );
 
-                if (retryable) {
+                if (
+                    retryable
+                ) {
+
                     console.log(
                         `Trying next Gemini streaming model after ${model}...`
                     );
@@ -344,7 +673,14 @@ const streamOpenAIAPIResponse = async (
                 throw lastError;
             }
 
-            if (!response.body) {
+            // =========================================
+            // CHECK STREAM BODY
+            // =========================================
+
+            if (
+                !response.body
+            ) {
+
                 throw new Error(
                     "Gemini streaming response has no body."
                 );
@@ -354,15 +690,29 @@ const streamOpenAIAPIResponse = async (
                 `Gemini STREAM connected: ${model}`
             );
 
+            // =========================================
+            // CREATE STREAM READER
+            // =========================================
+
             const reader =
-                response.body.getReader();
+                response
+                    .body
+                    .getReader();
 
             const decoder =
-                new TextDecoder("utf-8");
+                new TextDecoder(
+                    "utf-8"
+                );
 
             let buffer = "";
 
-            while (true) {
+            // =========================================
+            // READ STREAM
+            // =========================================
+
+            while (
+                true
+            ) {
 
                 const {
                     value,
@@ -370,7 +720,10 @@ const streamOpenAIAPIResponse = async (
                 } =
                     await reader.read();
 
-                if (done) {
+                if (
+                    done
+                ) {
+
                     break;
                 }
 
@@ -382,11 +735,22 @@ const streamOpenAIAPIResponse = async (
                         }
                     );
 
+                // =====================================
+                // SSE EVENTS
+                // =====================================
+
                 const events =
-                    buffer.split("\n\n");
+                    buffer.split(
+                        "\n\n"
+                    );
 
                 buffer =
-                    events.pop() || "";
+                    events.pop() ||
+                    "";
+
+                // =====================================
+                // PROCESS EVENTS
+                // =====================================
 
                 for (
                     const event
@@ -394,7 +758,9 @@ const streamOpenAIAPIResponse = async (
                 ) {
 
                     const lines =
-                        event.split("\n");
+                        event.split(
+                            "\n"
+                        );
 
                     for (
                         const line
@@ -404,29 +770,45 @@ const streamOpenAIAPIResponse = async (
                         const trimmed =
                             line.trim();
 
+                        // Ignore empty lines
                         if (
-                            !trimmed ||
-                            trimmed.startsWith(":")
+                            !trimmed
                         ) {
+
                             continue;
                         }
 
+                        // Ignore SSE comments
+                        if (
+                            trimmed.startsWith(
+                                ":"
+                            )
+                        ) {
+
+                            continue;
+                        }
+
+                        // Only process data lines
                         if (
                             !trimmed.startsWith(
                                 "data:"
                             )
                         ) {
+
                             continue;
                         }
 
                         const jsonText =
                             trimmed
-                                .substring(5)
+                                .substring(
+                                    5
+                                )
                                 .trim();
 
                         if (
                             !jsonText
                         ) {
+
                             continue;
                         }
 
@@ -443,7 +825,9 @@ const streamOpenAIAPIResponse = async (
                                     ?.content?.parts;
 
                             if (
-                                Array.isArray(parts)
+                                Array.isArray(
+                                    parts
+                                )
                             ) {
 
                                 for (
@@ -458,11 +842,16 @@ const streamOpenAIAPIResponse = async (
                                         onChunk(
                                             part.text
                                         );
+
                                     }
+
                                 }
+
                             }
 
-                        } catch (
+                        }
+
+                        catch (
                             parseError
                         ) {
 
@@ -470,18 +859,37 @@ const streamOpenAIAPIResponse = async (
                                 "Gemini stream JSON parse warning:",
                                 parseError.message
                             );
+
                         }
+
                     }
+
                 }
+
             }
+
+            // =========================================
+            // FLUSH DECODER
+            // =========================================
+
+            buffer +=
+                decoder.decode();
+
+            // =========================================
+            // PROCESS REMAINING BUFFER
+            // =========================================
 
             const remaining =
                 buffer.trim();
 
-            if (remaining) {
+            if (
+                remaining
+            ) {
 
                 const lines =
-                    remaining.split("\n");
+                    remaining.split(
+                        "\n"
+                    );
 
                 for (
                     const line
@@ -496,17 +904,21 @@ const streamOpenAIAPIResponse = async (
                             "data:"
                         )
                     ) {
+
                         continue;
                     }
 
                     const jsonText =
                         trimmed
-                            .substring(5)
+                            .substring(
+                                5
+                            )
                             .trim();
 
                     if (
                         !jsonText
                     ) {
+
                         continue;
                     }
 
@@ -523,7 +935,9 @@ const streamOpenAIAPIResponse = async (
                                 ?.content?.parts;
 
                         if (
-                            Array.isArray(parts)
+                            Array.isArray(
+                                parts
+                            )
                         ) {
 
                             for (
@@ -538,14 +952,21 @@ const streamOpenAIAPIResponse = async (
                                     onChunk(
                                         part.text
                                     );
+
                                 }
+
                             }
+
                         }
 
-                    } catch {
+                    }
+
+                    catch {
                         // Ignore incomplete final SSE data
                     }
+
                 }
+
             }
 
             console.log(
@@ -554,7 +975,15 @@ const streamOpenAIAPIResponse = async (
 
             return;
 
-        } catch (error) {
+        }
+
+        // =========================================
+        // STREAM EXCEPTION
+        // =========================================
+
+        catch (
+            error
+        ) {
 
             console.log(
                 `Gemini STREAM exception for ${model}:`,
@@ -563,8 +992,14 @@ const streamOpenAIAPIResponse = async (
 
             lastError =
                 error;
+
         }
+
     }
+
+    // =================================================
+    // ALL STREAMING MODELS FAILED
+    // =================================================
 
     throw (
         lastError ||
@@ -573,6 +1008,10 @@ const streamOpenAIAPIResponse = async (
         )
     );
 };
+
+// =====================================================
+// EXPORTS
+// =====================================================
 
 export {
     streamOpenAIAPIResponse
