@@ -66,9 +66,6 @@ function ChatWindow() {
   const [profileSaving, setProfileSaving] =
     useState(false);
 
-  const [selectedPlan, setSelectedPlan] =
-    useState("free");
-
   // ==========================================
   // FILE ATTACHMENT
   // ==========================================
@@ -374,16 +371,14 @@ function ChatWindow() {
   }, [user]);
 
   // ==========================================
-  // GET AI REPLY
+  // GET AI REPLY - STREAMING
   // ==========================================
 
   const getReply = async () => {
-    const trimmedPrompt =
-      prompt.trim();
+    const trimmedPrompt = prompt.trim();
 
     if (
-      (!trimmedPrompt &&
-        !selectedFile) ||
+      (!trimmedPrompt && !selectedFile) ||
       loading
     ) {
       return;
@@ -393,17 +388,11 @@ function ChatWindow() {
       alert(
         "Attachment selected successfully. File-to-AI processing will be connected next."
       );
-
       return;
     }
 
-    if (
-      !user
-    ) {
-      alert(
-        "Please login to use SigmaGPT."
-      );
-
+    if (!user) {
+      alert("Please login to use SigmaGPT.");
       return;
     }
 
@@ -412,27 +401,23 @@ function ChatWindow() {
       usage.used >= 10
     ) {
       setLimitReached(true);
-
       return;
     }
 
     try {
       setLoading(true);
+      setNewChat(false);
+      setReply("");
 
       const token =
-        localStorage.getItem(
-          "sigmagpt-token"
-        );
+        localStorage.getItem("sigmagpt-token");
 
       const response = await fetch(
-        `${API_URL}/api/chat`,
+        `${API_URL}/api/chat/stream`,
         {
           method: "POST",
-
           headers: {
-            "Content-Type":
-              "application/json",
-
+            "Content-Type": "application/json",
             ...(token
               ? {
                   Authorization:
@@ -440,100 +425,298 @@ function ChatWindow() {
                 }
               : {}),
           },
-
           body: JSON.stringify({
-            message:
-              trimmedPrompt,
-
-            threadId:
-              currThreadId,
+            message: trimmedPrompt,
+            threadId: currThreadId,
           }),
         }
       );
 
-      const data =
-        await response.json();
-
-      if (
-        response.status === 429 &&
-        data.limitReached
-      ) {
-        setLimitReached(true);
-
-        setUsage({
-          used:
-            data.used ?? 10,
-
-          limit:
-            data.dailyLimit ?? 10,
-
-          remaining: 0,
-        });
-
-        return;
-      }
-
       if (!response.ok) {
+        let data = {};
+
+        try {
+          data = await response.json();
+        } catch {
+          data = {};
+        }
+
+        if (data.limitReached) {
+          setUsage({
+            used: data.used ?? 10,
+            limit: data.dailyLimit ?? 10,
+            remaining: data.remaining ?? 0,
+          });
+
+          setLimitReached(true);
+          return;
+        }
+
         throw new Error(
           data.error ||
             "Unable to get AI response."
         );
       }
 
-      if (
-        data.usage
-      ) {
-        setUsage({
-          used:
-            data.usage.used ?? 0,
-
-          limit:
-            data.usage.limit ?? 10,
-
-          remaining:
-            data.usage.remaining ??
-            0,
-        });
-
-        if (
-          data.usage.remaining === 0 &&
-          user.plan !== "premium"
-        ) {
-          setLimitReached(true);
-        }
+      if (!response.body) {
+        throw new Error(
+          "Streaming is not supported by this browser."
+        );
       }
+
+      const reader =
+        response.body.getReader();
+
+      const decoder =
+        new TextDecoder("utf-8");
+
+      let buffer = "";
+      let streamedText = "";
+      let streamStarted = false;
 
       setPrevChats((prev) => [
         ...(prev || []),
-
         {
           role: "user",
-
-          content:
-            trimmedPrompt,
+          content: trimmedPrompt,
         },
-
         {
           role: "assistant",
-
-          content:
-            data.reply,
+          content: "",
         },
       ]);
 
-      setReply(data.reply);
+      const updateAssistantMessage = (
+        text
+      ) => {
+        setReply(text);
+
+        setPrevChats((prev) => {
+          if (!prev || prev.length === 0) {
+            return prev;
+          }
+
+          const updated = [...prev];
+          const lastIndex =
+            updated.length - 1;
+
+          if (
+            updated[lastIndex]?.role ===
+            "assistant"
+          ) {
+            updated[lastIndex] = {
+              ...updated[lastIndex],
+              content: text,
+            };
+          }
+
+          return updated;
+        });
+      };
+
+      const processEvent = (
+        eventBlock
+      ) => {
+        if (!eventBlock.trim()) {
+          return;
+        }
+
+        const lines =
+          eventBlock.split("\n");
+
+        let eventName = "message";
+        let dataText = "";
+
+        for (const line of lines) {
+          const trimmedLine =
+            line.trim();
+
+          if (
+            trimmedLine.startsWith(
+              "event:"
+            )
+          ) {
+            eventName =
+              trimmedLine
+                .substring(6)
+                .trim();
+          }
+
+          if (
+            trimmedLine.startsWith(
+              "data:"
+            )
+          ) {
+            dataText +=
+              trimmedLine
+                .substring(5)
+                .trim();
+          }
+        }
+
+        if (!dataText) {
+          return;
+        }
+
+        let data;
+
+        try {
+          data =
+            JSON.parse(dataText);
+        } catch (error) {
+          console.log(
+            "SSE JSON parse warning:",
+            error
+          );
+          return;
+        }
+
+        if (
+          eventName === "start"
+        ) {
+          streamStarted = true;
+          return;
+        }
+
+        if (
+          eventName === "chunk"
+        ) {
+          const chunk =
+            data?.text || "";
+
+          if (chunk) {
+            streamedText += chunk;
+
+            updateAssistantMessage(
+              streamedText
+            );
+          }
+
+          return;
+        }
+
+        if (
+          eventName === "done"
+        ) {
+          if (data?.reply) {
+            streamedText =
+              data.reply;
+
+            updateAssistantMessage(
+              streamedText
+            );
+          }
+
+          if (data?.usage) {
+            setUsage(data.usage);
+
+            if (
+              data.usage.remaining ===
+                0 &&
+              user.plan !== "premium"
+            ) {
+              setLimitReached(true);
+            }
+          }
+
+          return;
+        }
+
+        if (
+          eventName === "error"
+        ) {
+          throw new Error(
+            data?.error ||
+              "AI streaming failed."
+          );
+        }
+      };
+
+      while (true) {
+        const {
+          value,
+          done,
+        } = await reader.read();
+
+        if (done) {
+          break;
+        }
+
+        buffer +=
+          decoder.decode(
+            value,
+            {
+              stream: true,
+            }
+          );
+
+        const events =
+          buffer.split("\n\n");
+
+        buffer =
+          events.pop() || "";
+
+        for (
+          const eventBlock of events
+        ) {
+          processEvent(
+            eventBlock
+          );
+        }
+      }
+
+      buffer +=
+        decoder.decode();
+
+      if (buffer.trim()) {
+        processEvent(buffer);
+      }
+
+      if (
+        !streamStarted ||
+        !streamedText.trim()
+      ) {
+        throw new Error(
+          "AI returned an empty response."
+        );
+      }
 
       setPrompt("");
+
     } catch (err) {
       console.log(
-        "Chat error:",
+        "Streaming chat error:",
         err
       );
+
+      setPrevChats((prev) => {
+        if (
+          !prev ||
+          prev.length === 0
+        ) {
+          return prev;
+        }
+
+        const updated = [...prev];
+        const lastIndex =
+          updated.length - 1;
+
+        if (
+          updated[lastIndex]?.role ===
+            "assistant" &&
+          !updated[lastIndex]?.content
+        ) {
+          updated.pop();
+        }
+
+        return updated;
+      });
 
       alert(
         err.message ||
           "Something went wrong."
       );
+
     } finally {
       setLoading(false);
     }
@@ -711,10 +894,6 @@ function ChatWindow() {
                 );
               }
 
-              setSelectedPlan(
-                "premium"
-              );
-
               setPremiumOpen(
                 false
               );
@@ -858,10 +1037,6 @@ function ChatWindow() {
           );
         }
 
-        setSelectedPlan(
-          "free"
-        );
-
         setPremiumOpen(
           false
         );
@@ -998,12 +1173,6 @@ function ChatWindow() {
               onClick={() => {
                 setProfileOpen(
                   false
-                );
-
-                setSelectedPlan(
-                  isPremium
-                    ? "premium"
-                    : "premium"
                 );
 
                 setPremiumOpen(
@@ -1641,235 +1810,257 @@ function ChatWindow() {
       ================================== */}
 
       {premiumOpen && (
-        <div className="modalOverlay">
+        <div className="premiumOverlay">
           <div className="premiumModal">
-            <div className="premiumHeader">
-              <div>
-                <h2>
-                  SigmaGPT Premium
-                </h2>
 
-                <p>
-                  Unlock the full AI experience
-                </p>
-              </div>
+            {/* HEADER */}
+            <div className="premiumHero">
 
               <button
-                className="modalCloseButton"
-                onClick={() =>
-                  setPremiumOpen(
-                    false
-                  )
-                }
+                type="button"
+                className="premiumCloseButton"
+                onClick={() => setPremiumOpen(false)}
+                aria-label="Close premium modal"
               >
                 <i className="fa-solid fa-xmark"></i>
               </button>
+
+              <div className="premiumCrown">
+                <i className="fa-solid fa-crown"></i>
+              </div>
+
+              <h2>Upgrade to Premium</h2>
+
+              <p>Unlock the full power of SigmaGPT</p>
             </div>
 
+
+            {/* PLAN CARDS */}
             <div className="premiumPlans">
-              {/* FREE */}
 
-              <button
-                className={`planCard ${
-                  selectedPlan ===
-                  "free"
-                    ? "selected"
-                    : ""
+              {/* FREE PLAN */}
+              <div
+                className={`premiumPlanCard freePlanCard ${
+                  !isPremium ? "currentPlan" : ""
                 }`}
-                onClick={() =>
-                  setSelectedPlan(
-                    "free"
-                  )
-                }
               >
-                <div className="planTop">
-                  <div>
-                    <h3>
-                      Free
-                    </h3>
 
-                    <p>
-                      For getting started
-                    </p>
-                  </div>
-
-                  <strong>
-                    ₹0
-                    <span>
-                      /month
-                    </span>
-                  </strong>
-                </div>
-
-                <div className="planFeatures">
-                  <div>
-                    <i className="fa-solid fa-check"></i>
-                    10 AI messages per day
-                  </div>
-
-                  <div>
-                    <i className="fa-solid fa-check"></i>
-                    Chat history
-                  </div>
-
-                  <div>
-                    <i className="fa-solid fa-check"></i>
-                    Markdown support
-                  </div>
-
-                  <div>
-                    <i className="fa-solid fa-check"></i>
-                    Standard responses
-                  </div>
-                </div>
-
-                {!isPremium &&
-                  selectedPlan ===
-                    "free" && (
-                    <div className="usageCard">
-                      <div className="usageHeader">
-                        <span>
-                          Daily usage
-                        </span>
-
-                        <strong>
-                          {usage.used}/
-                          {usage.limit}
-                        </strong>
-                      </div>
-
-                      <div className="usageBar">
-                        <div
-                          style={{
-                            width: `${Math.min(
-                              ((usage.used ||
-                                0) /
-                                10) *
-                                100,
-                              100
-                            )}%`,
-                          }}
-                        ></div>
-                      </div>
-                    </div>
-                  )}
-              </button>
-
-              {/* PREMIUM */}
-
-              <button
-                className={`planCard premiumPlanCard ${
-                  selectedPlan ===
-                  "premium"
-                    ? "selected"
-                    : ""
-                }`}
-                onClick={() =>
-                  setSelectedPlan(
-                    "premium"
-                  )
-                }
-              >
-                <div className="premiumBadge">
-                  PREMIUM
-                </div>
-
-                <div className="planTop">
-                  <div>
-                    <h3>
-                      Premium
-                    </h3>
-
-                    <p>
-                      For unlimited AI
-                    </p>
-                  </div>
-
-                  <strong>
-                    ₹499
-                    <span>
-                      /month
-                    </span>
-                  </strong>
-                </div>
-
-                <div className="planFeatures">
-                  <div>
-                    <i className="fa-solid fa-check"></i>
-                    Unlimited AI conversations
-                  </div>
-
-                  <div>
-                    <i className="fa-solid fa-check"></i>
-                    No daily message limit
-                  </div>
-
-                  <div>
-                    <i className="fa-solid fa-check"></i>
-                    Full chat history
-                  </div>
-
-                  <div>
-                    <i className="fa-solid fa-check"></i>
-                    Markdown & code support
-                  </div>
-                </div>
-
-                {isPremium && (
-                  <div className="premiumActive">
-                    <i className="fa-solid fa-circle-check"></i>
-                    Premium Active
+                {!isPremium && (
+                  <div className="currentPlanBadge">
+                    CURRENT PLAN
                   </div>
                 )}
-              </button>
+
+                <div className="planHeader">
+
+                  <div>
+                    <h3>Free</h3>
+                    <p>For casual users</p>
+                  </div>
+
+                  {!isPremium && (
+                    <span className="currentPlanTag">
+                      Current
+                    </span>
+                  )}
+
+                </div>
+
+
+                <div className="planPrice">
+                  ₹0
+                  <span>/month</span>
+                </div>
+
+
+                <div className="planFeatureList">
+
+                  <div className="planFeature">
+                    <i className="fa-solid fa-check"></i>
+                    <span>10 AI messages per day</span>
+                  </div>
+
+                  <div className="planFeature">
+                    <i className="fa-solid fa-check"></i>
+                    <span>Chat history</span>
+                  </div>
+
+                  <div className="planFeature">
+                    <i className="fa-solid fa-check"></i>
+                    <span>Markdown support</span>
+                  </div>
+
+                  <div className="planFeature">
+                    <i className="fa-solid fa-check"></i>
+                    <span>Standard responses</span>
+                  </div>
+
+                </div>
+
+
+                {/* FREE USER USAGE */}
+                {!isPremium && (
+                  <div className="premiumUsageCard">
+
+                    <div className="usageTopRow">
+                      <span>AI Usage Today</span>
+
+                      <strong>
+                        {usage.used}/{usage.limit || 10}
+                      </strong>
+                    </div>
+
+                    <div className="premiumUsageBar">
+                      <div
+                        className="premiumUsageProgress"
+                        style={{
+                          width: `${Math.min(
+                            ((usage.used || 0) / 10) * 100,
+                            100
+                          )}%`
+                        }}
+                      ></div>
+                    </div>
+
+                    <div className="usageRemaining">
+                      {Math.max(
+                        usage.remaining ?? (10 - (usage.used || 0)),
+                        0
+                      ) > 0
+                        ? `${Math.max(
+                            usage.remaining ?? (10 - (usage.used || 0)),
+                            0
+                          )} messages remaining`
+                        : "Daily limit reached"}
+                    </div>
+
+                  </div>
+                )}
+
+
+                {/* PREMIUM USER DOWNGRADE */}
+                {isPremium && (
+                  <button
+                    type="button"
+                    className="downgradeButton"
+                    onClick={handleCancelPremium}
+                    disabled={loading}
+                  >
+                    <i className="fa-solid fa-arrow-down"></i>
+
+                    {loading
+                      ? "Downgrading..."
+                      : "Downgrade to Free"}
+                  </button>
+                )}
+
+              </div>
+
+
+              {/* PREMIUM PLAN */}
+              <div
+                className={`premiumPlanCard premiumPlan ${
+                  isPremium ? "activePremiumPlan" : ""
+                }`}
+              >
+
+                <div className="mostPopularBadge">
+                  MOST POPULAR
+                </div>
+
+
+                <div className="planHeader">
+
+                  <div>
+                    <h3>Premium</h3>
+                    <p>For power users</p>
+                  </div>
+
+                </div>
+
+
+                <div className="planPrice premiumPrice">
+                  ₹499
+                  <span>/month</span>
+                </div>
+
+
+                <div className="planFeatureList">
+
+                  <div className="planFeature">
+                    <i className="fa-solid fa-check"></i>
+                    <span>Unlimited AI conversations</span>
+                  </div>
+
+                  <div className="planFeature">
+                    <i className="fa-solid fa-check"></i>
+                    <span>No daily message limit</span>
+                  </div>
+
+                  <div className="planFeature">
+                    <i className="fa-solid fa-check"></i>
+                    <span>Full chat history</span>
+                  </div>
+
+                  <div className="planFeature">
+                    <i className="fa-solid fa-check"></i>
+                    <span>Markdown &amp; code support</span>
+                  </div>
+
+                </div>
+
+
+                {/* FREE USER → PAYMENT */}
+                {!isPremium && (
+                  <button
+                    type="button"
+                    className="premiumUpgradeButton"
+                    onClick={handleUpgrade}
+                    disabled={loading}
+                  >
+                    <i className="fa-solid fa-crown"></i>
+
+                    {loading
+                      ? "Opening Secure Checkout..."
+                      : "Upgrade to Premium"}
+
+                    <span>₹499/month</span>
+                  </button>
+                )}
+
+
+                {/* PREMIUM USER → ACTIVE */}
+                {isPremium && (
+                  <div className="premiumActiveState">
+                    <i className="fa-solid fa-circle-check"></i>
+                    <span>Premium Active</span>
+                  </div>
+                )}
+
+              </div>
+
             </div>
 
-            {/* ACTION */}
 
-            {!isPremium &&
-              selectedPlan ===
-                "premium" && (
-                <button
-                  className="upgradeButton"
-                  onClick={
-                    handleUpgrade
-                  }
-                  disabled={
-                    loading
-                  }
-                >
-                  <i className="fa-solid fa-crown"></i>
+            {/* FOOTER */}
+            <div className="premiumModalFooter">
 
-                  {loading
-                    ? "Upgrading..."
-                    : "Upgrade Now"}
-                </button>
+              {!isPremium ? (
+                <>
+                  <i className="fa-solid fa-shield-halved"></i>
+                  Secure payment powered by Razorpay
+                  <span>•</span>
+                  Cancel anytime
+                </>
+              ) : (
+                <>
+                  <i className="fa-solid fa-circle-check"></i>
+                  Your Premium plan is active
+                </>
               )}
 
-            {isPremium && (
-              <button
-                className="cancelPremiumButton"
-                onClick={
-                  handleCancelPremium
-                }
-                disabled={
-                  loading
-                }
-              >
-                {loading
-                  ? "Cancelling..."
-                  : "Cancel Premium"}
-              </button>
-            )}
+            </div>
 
-            <p className="premiumFooter">
-              {isPremium
-                ? "Your Premium plan is currently active."
-                : selectedPlan ===
-                  "free"
-                ? "You are currently using the Free plan."
-                : "Secure payment powered by Razorpay. ₹499/month."}
-            </p>
           </div>
         </div>
       )}

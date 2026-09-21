@@ -4344,3 +4344,3146 @@
 .lightTheme .brandName {
     color: #222222;
 }
+/* =========================================================
+   SIGMAGPT SETTINGS - FINAL UI FIX
+   ========================================================= */
+
+/* SETTINGS MODAL */
+.settingsModal {
+    width: min(520px, calc(100vw - 32px));
+    max-height: calc(100vh - 40px);
+    overflow-y: auto;
+    background: #181818;
+    border: 1px solid #303030;
+    border-radius: 18px;
+    box-shadow: 0 25px 70px rgba(0, 0, 0, 0.55);
+    color: #ffffff;
+}
+
+.settingsHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 22px 24px;
+    border-bottom: 1px solid #2c2c2c;
+}
+
+.settingsHeader h2 {
+    margin: 0;
+    color: #ffffff;
+    font-size: 21px;
+    font-weight: 700;
+}
+
+.settingsHeader p {
+    margin: 5px 0 0;
+    color: #8d8d8d;
+    font-size: 12px;
+}
+
+.settingsBody {
+    padding: 20px 22px 24px;
+}
+
+.settingsSectionTitle {
+    margin: 0 0 9px;
+    color: #777;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+}
+
+/* =========================================================
+   ACCOUNT CARD
+   ========================================================= */
+
+.accountCard {
+    width: 100%;
+    min-height: 78px;
+    display: flex;
+    align-items: center;
+    gap: 13px;
+
+    padding: 12px 14px;
+    margin: 0 0 20px;
+
+    box-sizing: border-box;
+
+    border: 1px solid #303030;
+    border-radius: 13px;
+
+    background: #222222;
+    color: #ffffff;
+
+    text-align: left;
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.15s ease;
+}
+
+.accountCard:hover {
+    background: #292929;
+    border-color: #414141;
+    transform: translateY(-1px);
+}
+
+.settingsAvatar {
+    width: 43px;
+    height: 43px;
+    min-width: 43px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: linear-gradient(
+        135deg,
+        #1687ff,
+        #7b35ff
+    );
+
+    color: #ffffff;
+    font-size: 17px;
+}
+
+.accountInfo {
+    min-width: 0;
+    flex: 1;
+
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 3px;
+}
+
+.accountInfo strong {
+    display: block;
+
+    max-width: 100%;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    color: #f5f5f5;
+    font-size: 14px;
+    font-weight: 650;
+}
+
+.accountInfo span {
+    display: block;
+
+    color: #b9b9b9;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.accountInfo small {
+    display: block;
+
+    margin-top: 2px;
+
+    color: #6ea8ff;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.settingsChevron {
+    flex-shrink: 0;
+
+    color: #777;
+    font-size: 12px;
+
+    transition:
+        color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.accountCard:hover .settingsChevron {
+    color: #b8b8b8;
+    transform: translateX(2px);
+}
+
+/* =========================================================
+   SETTINGS OPTIONS
+   ========================================================= */
+
+.settingsOption {
+    width: 100%;
+    min-height: 66px;
+
+    display: flex;
+    align-items: center;
+    gap: 13px;
+
+    padding: 11px 13px;
+    margin: 0 0 10px;
+
+    box-sizing: border-box;
+
+    border: 1px solid #303030;
+    border-radius: 13px;
+
+    background: #222222;
+    color: #ffffff;
+
+    text-align: left;
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.15s ease;
+}
+
+.settingsOption:hover {
+    background: #292929;
+    border-color: #414141;
+    transform: translateY(-1px);
+}
+
+.settingsOptionIcon {
+    width: 39px;
+    height: 39px;
+    min-width: 39px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 10px;
+
+    background: #2e2e2e;
+    color: #aebcff;
+
+    font-size: 14px;
+}
+
+.settingsOption > div:nth-child(2) {
+    min-width: 0;
+    flex: 1;
+
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.settingsOption strong {
+    display: block;
+
+    color: #eeeeee;
+    font-size: 13px;
+    font-weight: 650;
+}
+
+.settingsOption span {
+    display: block;
+
+    color: #858585;
+    font-size: 11px;
+    line-height: 15px;
+}
+
+.settingsOption > i:last-child {
+    flex-shrink: 0;
+
+    color: #6f6f6f;
+    font-size: 11px;
+
+    transition:
+        color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.settingsOption:hover > i:last-child {
+    color: #bdbdbd;
+    transform: translateX(2px);
+}
+
+/* =========================================================
+   PROFILE / SETTINGS DIVIDER
+   ========================================================= */
+
+.profileDivider {
+    width: 100%;
+    height: 1px;
+
+    margin: 12px 0;
+
+    background: #2c2c2c;
+}
+
+/* =========================================================
+   MODAL CLOSE BUTTON
+   ========================================================= */
+
+.modalCloseButton {
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 1px solid #3a3a3a;
+    border-radius: 8px;
+
+    background: #252525;
+    color: #bdbdbd;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        color 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.modalCloseButton:hover {
+    background: #333333;
+    border-color: #4a4a4a;
+    color: #ffffff;
+}
+
+/* =========================================================
+   LIGHT THEME
+   ========================================================= */
+
+.lightTheme .settingsModal {
+    background: #ffffff;
+    border-color: #dddddd;
+    color: #222222;
+}
+
+.lightTheme .settingsHeader {
+    border-bottom-color: #e5e5e5;
+}
+
+.lightTheme .settingsHeader h2 {
+    color: #222222;
+}
+
+.lightTheme .settingsHeader p {
+    color: #888888;
+}
+
+.lightTheme .settingsSectionTitle {
+    color: #888888;
+}
+
+.lightTheme .accountCard,
+.lightTheme .settingsOption {
+    background: #f7f7f7;
+    border-color: #dddddd;
+    color: #222222;
+}
+
+.lightTheme .accountCard:hover,
+.lightTheme .settingsOption:hover {
+    background: #f0f0f0;
+    border-color: #cccccc;
+}
+
+.lightTheme .accountInfo strong,
+.lightTheme .settingsOption strong {
+    color: #222222;
+}
+
+.lightTheme .accountInfo span,
+.lightTheme .settingsOption span {
+    color: #777777;
+}
+
+.lightTheme .settingsOptionIcon {
+    background: #e9e9e9;
+    color: #586bff;
+}
+
+.lightTheme .settingsChevron,
+.lightTheme .settingsOption > i:last-child {
+    color: #888888;
+}
+
+.lightTheme .profileDivider {
+    background: #e5e5e5;
+}
+
+.lightTheme .modalCloseButton {
+    background: #f3f3f3;
+    border-color: #dddddd;
+    color: #555555;
+}
+
+.lightTheme .modalCloseButton:hover {
+    background: #e8e8e8;
+    color: #222222;
+}
+
+/* =========================================================
+   MOBILE SETTINGS
+   ========================================================= */
+
+@media (max-width: 600px) {
+    .settingsModal {
+        width: calc(100vw - 20px);
+        max-height: calc(100vh - 24px);
+        border-radius: 16px;
+    }
+
+    .settingsHeader {
+        padding: 18px 17px;
+    }
+
+    .settingsBody {
+        padding: 16px 14px 20px;
+    }
+
+    .accountCard {
+        min-height: 74px;
+        padding: 11px;
+    }
+
+    .settingsOption {
+        min-height: 62px;
+        padding: 10px 11px;
+    }
+
+    .settingsAvatar {
+        width: 40px;
+        height: 40px;
+        min-width: 40px;
+    }
+
+    .settingsOptionIcon {
+        width: 37px;
+        height: 37px;
+        min-width: 37px;
+    }
+}
+/* =========================================================
+   PREMIUM PROFILE CARD - FINAL FIX
+   ========================================================= */
+
+.premiumMiniCard {
+    width: 100%;
+    min-height: 68px;
+
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+
+    box-sizing: border-box !important;
+
+    padding: 10px 12px !important;
+    margin: 2px 0 10px !important;
+
+    border: 1px solid rgba(139, 53, 245, 0.25) !important;
+    border-radius: 12px !important;
+
+    background: linear-gradient(
+        135deg,
+        rgba(139, 53, 245, 0.10),
+        rgba(30, 100, 255, 0.07)
+    ) !important;
+
+    color: #ffffff !important;
+}
+
+.premiumMiniIcon {
+    width: 38px !important;
+    height: 38px !important;
+    min-width: 38px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    flex-shrink: 0 !important;
+
+    border-radius: 10px !important;
+
+    background: rgba(139, 53, 245, 0.18) !important;
+    color: #c875ff !important;
+
+    font-size: 15px !important;
+}
+
+.premiumMiniCard > div:last-child {
+    min-width: 0 !important;
+    flex: 1 !important;
+
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 3px !important;
+}
+
+.premiumMiniCard strong {
+    display: block !important;
+
+    color: #f2f2f2 !important;
+
+    font-size: 13px !important;
+    font-weight: 650 !important;
+
+    line-height: 17px !important;
+}
+
+.premiumMiniCard span {
+    display: block !important;
+
+    color: #999 !important;
+
+    font-size: 10px !important;
+    line-height: 14px !important;
+}
+
+.premiumMiniCard small {
+    display: flex !important;
+    align-items: center !important;
+    gap: 5px !important;
+
+    margin-top: 2px !important;
+
+    color: #aaa !important;
+
+    font-size: 9px !important;
+    line-height: 13px !important;
+}
+
+.premiumMiniCard small i {
+    color: #63d99a !important;
+    font-size: 9px !important;
+    flex-shrink: 0 !important;
+}
+
+/* Premium profile item spacing */
+.premiumProfileItem {
+    margin-bottom: 8px !important;
+}
+
+/* Profile panel general text safety */
+.profileItemText {
+    min-width: 0 !important;
+    flex: 1 !important;
+
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 3px !important;
+}
+
+.profileItemText strong {
+    display: block !important;
+    color: #eeeeee !important;
+    font-size: 13px !important;
+    line-height: 17px !important;
+}
+
+.profileItemText span {
+    display: block !important;
+    color: #858585 !important;
+    font-size: 10px !important;
+    line-height: 14px !important;
+}
+
+/* Profile panel */
+.profilePanel {
+    overflow: hidden !important;
+}
+
+.profileItem {
+    box-sizing: border-box !important;
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+    .premiumMiniCard {
+        min-height: 64px !important;
+        padding: 9px 10px !important;
+    }
+
+    .premiumMiniIcon {
+        width: 36px !important;
+        height: 36px !important;
+        min-width: 36px !important;
+    }
+
+    .premiumMiniCard strong {
+        font-size: 12px !important;
+    }
+
+    .premiumMiniCard span,
+    .premiumMiniCard small {
+        font-size: 9px !important;
+    }
+}
+/* =========================================================
+   SIGMAGPT PREMIUM MODAL - FINAL UI FIX
+   ========================================================= */
+
+.premiumModal {
+    width: min(760px, calc(100vw - 32px));
+    max-height: calc(100vh - 40px);
+    overflow-y: auto;
+
+    box-sizing: border-box;
+
+    padding: 24px;
+
+    background: #181818 !important;
+    border: 1px solid #303030 !important;
+    border-radius: 18px !important;
+
+    color: #ffffff !important;
+
+    box-shadow:
+        0 25px 70px rgba(0, 0, 0, 0.55);
+}
+
+/* HEADER */
+
+.premiumHeader {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+
+    margin-bottom: 22px;
+}
+
+.premiumHeader > div {
+    flex: 1;
+    text-align: center;
+}
+
+.premiumHeader h2 {
+    margin: 0;
+
+    color: #ffffff !important;
+
+    font-size: 21px;
+    font-weight: 700;
+}
+
+.premiumHeader p {
+    margin: 6px 0 0;
+
+    color: #9a9a9a !important;
+
+    font-size: 12px;
+}
+
+/* PREMIUM CLOSE BUTTON */
+
+.premiumHeader .modalCloseButton {
+    position: absolute;
+
+    width: 32px;
+    height: 32px;
+
+    margin-left: -8px;
+}
+
+/* PLANS */
+
+.premiumPlans {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+
+    gap: 14px;
+
+    width: 100%;
+}
+
+/* PLAN CARD */
+
+.planCard {
+    position: relative;
+
+    width: 100%;
+    min-height: 250px;
+
+    display: flex;
+    flex-direction: column;
+
+    box-sizing: border-box;
+
+    padding: 20px;
+
+    border: 1px solid #363636 !important;
+    border-radius: 14px !important;
+
+    background: #242424 !important;
+
+    color: #ffffff !important;
+
+    text-align: left;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.2s ease,
+        border-color 0.2s ease,
+        background 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.planCard:hover {
+    background: #292929 !important;
+
+    border-color: #4a4a4a !important;
+
+    transform: translateY(-2px);
+}
+
+.planCard.selected {
+    border-color: #6d63ff !important;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(100, 90, 255, 0.13),
+            rgba(139, 53, 245, 0.07)
+        ),
+        #242424 !important;
+
+    box-shadow:
+        0 0 0 1px rgba(109, 99, 255, 0.18),
+        0 12px 30px rgba(0, 0, 0, 0.18);
+}
+
+/* PREMIUM CARD */
+
+.premiumPlanCard {
+    border-color: rgba(139, 53, 245, 0.35) !important;
+}
+
+.premiumPlanCard.selected {
+    border-color: #9b5cff !important;
+
+    box-shadow:
+        0 0 0 1px rgba(155, 92, 255, 0.22),
+        0 12px 35px rgba(110, 60, 220, 0.12);
+}
+
+/* PREMIUM BADGE */
+
+.premiumBadge {
+    position: absolute;
+
+    top: 12px;
+    right: 12px;
+
+    padding: 4px 8px;
+
+    border-radius: 6px;
+
+    background: rgba(139, 53, 245, 0.16);
+
+    color: #c879ff !important;
+
+    font-size: 8px;
+    font-weight: 800;
+
+    letter-spacing: 0.7px;
+}
+
+/* PLAN TOP */
+
+.planTop {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+
+    gap: 15px;
+
+    margin-bottom: 18px;
+}
+
+.planTop h3 {
+    margin: 0;
+
+    color: #f2f2f2 !important;
+
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.planTop p {
+    margin: 5px 0 0;
+
+    color: #888888 !important;
+
+    font-size: 11px;
+}
+
+.planTop > strong {
+    flex-shrink: 0;
+
+    color: #ffffff !important;
+
+    font-size: 18px;
+    font-weight: 700;
+
+    white-space: nowrap;
+}
+
+.planTop > strong span {
+    color: #858585 !important;
+
+    font-size: 10px;
+    font-weight: 400;
+}
+
+/* FEATURES */
+
+.planFeatures {
+    display: flex;
+    flex-direction: column;
+
+    gap: 11px;
+
+    margin-top: 2px;
+}
+
+.planFeatures > div {
+    display: flex;
+    align-items: center;
+
+    gap: 8px;
+
+    color: #c8c8c8 !important;
+
+    font-size: 11px;
+    line-height: 16px;
+}
+
+.planFeatures i {
+    flex-shrink: 0;
+
+    color: #63d99a !important;
+
+    font-size: 9px;
+}
+
+/* USAGE */
+
+.usageCard {
+    margin-top: auto;
+
+    padding-top: 15px;
+}
+
+.usageHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    margin-bottom: 7px;
+
+    color: #8e8e8e !important;
+
+    font-size: 10px;
+}
+
+.usageHeader strong {
+    color: #d7d7d7 !important;
+}
+
+.usageBar {
+    width: 100%;
+    height: 5px;
+
+    overflow: hidden;
+
+    border-radius: 5px;
+
+    background: #363636 !important;
+}
+
+.usageBar > div {
+    height: 100%;
+
+    border-radius: inherit;
+
+    background: linear-gradient(
+        90deg,
+        #1687ff,
+        #7b35ff
+    ) !important;
+
+    transition: width 0.3s ease;
+}
+
+/* PREMIUM ACTIVE */
+
+.premiumActive {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    gap: 7px !important;
+
+    margin-top: auto !important;
+    padding-top: 15px !important;
+
+    color: #63d99a !important;
+
+    font-size: 11px !important;
+    font-weight: 600 !important;
+}
+
+.premiumActive i {
+    color: #63d99a !important;
+
+    font-size: 11px !important;
+}
+
+/* ACTION BUTTONS */
+
+.upgradeButton,
+.cancelPremiumButton {
+    width: 100% !important;
+
+    min-height: 46px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    gap: 8px !important;
+
+    margin-top: 16px !important;
+
+    padding: 0 18px !important;
+
+    box-sizing: border-box !important;
+
+    border-radius: 11px !important;
+
+    font-family: inherit !important;
+
+    font-size: 13px !important;
+    font-weight: 650 !important;
+
+    cursor: pointer !important;
+
+    transition:
+        transform 0.2s ease,
+        opacity 0.2s ease,
+        background 0.2s ease;
+}
+
+/* UPGRADE */
+
+.upgradeButton {
+    border: none !important;
+
+    background: linear-gradient(
+        135deg,
+        #1687ff,
+        #7b35ff
+    ) !important;
+
+    color: #ffffff !important;
+
+    box-shadow:
+        0 7px 22px rgba(70, 100, 255, 0.25);
+}
+
+.upgradeButton:hover:not(:disabled) {
+    transform: translateY(-1px);
+
+    box-shadow:
+        0 10px 28px rgba(70, 100, 255, 0.35);
+}
+
+/* CANCEL */
+
+.cancelPremiumButton {
+    border: 1px solid #4a3030 !important;
+
+    background: #292020 !important;
+
+    color: #ff8585 !important;
+}
+
+.cancelPremiumButton:hover:not(:disabled) {
+    background: #352424 !important;
+
+    border-color: #684040 !important;
+}
+
+.upgradeButton:disabled,
+.cancelPremiumButton:disabled {
+    opacity: 0.55 !important;
+    cursor: not-allowed !important;
+}
+
+/* FOOTER */
+
+.premiumFooter {
+    margin: 12px 0 0 !important;
+
+    color: #777777 !important;
+
+    font-size: 10px !important;
+
+    line-height: 15px !important;
+
+    text-align: center !important;
+}
+
+/* =========================================================
+   PREMIUM MODAL - LIGHT THEME
+   ========================================================= */
+
+.lightTheme .premiumModal {
+    background: #ffffff !important;
+    border-color: #dddddd !important;
+    color: #222222 !important;
+}
+
+.lightTheme .premiumHeader h2 {
+    color: #222222 !important;
+}
+
+.lightTheme .premiumHeader p {
+    color: #777777 !important;
+}
+
+.lightTheme .planCard {
+    background: #f7f7f7 !important;
+    border-color: #dddddd !important;
+
+    color: #222222 !important;
+}
+
+.lightTheme .planCard:hover {
+    background: #f0f0f0 !important;
+}
+
+.lightTheme .planCard.selected {
+    background: #f5f3ff !important;
+    border-color: #7770dd !important;
+}
+
+.lightTheme .planTop h3 {
+    color: #222222 !important;
+}
+
+.lightTheme .planTop p {
+    color: #777777 !important;
+}
+
+.lightTheme .planTop > strong {
+    color: #222222 !important;
+}
+
+.lightTheme .planFeatures > div {
+    color: #555555 !important;
+}
+
+.lightTheme .usageBar {
+    background: #dddddd !important;
+}
+
+.lightTheme .premiumFooter {
+    color: #777777 !important;
+}
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 700px) {
+    .premiumModal {
+        width: calc(100vw - 20px);
+
+        max-height: calc(100vh - 20px);
+
+        padding: 18px;
+
+        border-radius: 16px !important;
+    }
+
+    .premiumPlans {
+        grid-template-columns: 1fr;
+    }
+
+    .planCard {
+        min-height: 220px;
+    }
+
+    .premiumHeader h2 {
+        font-size: 19px;
+    }
+
+    .planTop h3 {
+        font-size: 15px;
+    }
+
+    .planFeatures {
+        gap: 9px;
+    }
+
+    .planFeatures > div {
+        font-size: 10px;
+    }
+}
+/* =========================================================
+   PREMIUM MODAL - ORIGINAL CLEAN SIGMAGPT LOOK
+   ========================================================= */
+
+.premiumModal {
+    width: min(760px, calc(100vw - 32px)) !important;
+    max-height: calc(100vh - 32px) !important;
+    overflow-y: auto !important;
+
+    padding: 28px !important;
+    box-sizing: border-box !important;
+
+    background: #1f1f1f !important;
+    border: 1px solid #303030 !important;
+    border-radius: 18px !important;
+
+    color: #eeeeee !important;
+
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45) !important;
+}
+
+/* HEADER */
+
+.premiumHeader {
+    position: relative !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    margin-bottom: 24px !important;
+
+    text-align: center !important;
+}
+
+.premiumHeader > div {
+    width: 100% !important;
+    text-align: center !important;
+}
+
+.premiumHeader h2 {
+    margin: 0 !important;
+
+    color: #eeeeee !important;
+
+    font-size: 21px !important;
+    font-weight: 700 !important;
+}
+
+.premiumHeader p {
+    margin: 6px 0 0 !important;
+
+    color: #999999 !important;
+
+    font-size: 12px !important;
+}
+
+/* CLOSE */
+
+.premiumHeader .modalCloseButton {
+    position: absolute !important;
+
+    left: 0 !important;
+    top: 0 !important;
+
+    width: 30px !important;
+    height: 30px !important;
+
+    margin: 0 !important;
+
+    border: 1px solid #383838 !important;
+    border-radius: 8px !important;
+
+    background: #292929 !important;
+    color: #aaaaaa !important;
+
+    cursor: pointer !important;
+}
+
+.premiumHeader .modalCloseButton:hover {
+    background: #333333 !important;
+    color: #ffffff !important;
+}
+
+/* TWO CARDS */
+
+.premiumPlans {
+    display: grid !important;
+
+    grid-template-columns: 1fr 1fr !important;
+
+    gap: 14px !important;
+
+    width: 100% !important;
+}
+
+/* CARD */
+
+.planCard {
+    position: relative !important;
+
+    min-height: 250px !important;
+
+    display: flex !important;
+    flex-direction: column !important;
+
+    padding: 20px !important;
+
+    box-sizing: border-box !important;
+
+    border: 1px solid #383838 !important;
+    border-radius: 12px !important;
+
+    background: #292929 !important;
+
+    color: #eeeeee !important;
+
+    text-align: left !important;
+
+    cursor: pointer !important;
+
+    transition:
+        border-color 0.2s ease,
+        background 0.2s ease,
+        transform 0.2s ease !important;
+}
+
+.planCard:hover {
+    background: #2d2d2d !important;
+
+    border-color: #484848 !important;
+
+    transform: translateY(-1px) !important;
+}
+
+/* SELECTED CARD */
+
+.planCard.selected {
+    background: #292929 !important;
+
+    border-color: #555555 !important;
+
+    box-shadow: none !important;
+}
+
+/* PREMIUM SELECTED */
+
+.planCard.premiumPlanCard.selected,
+.premiumPlans .planCard:last-child.selected {
+    border-color: #8b35f5 !important;
+
+    background: #292929 !important;
+
+    box-shadow:
+        0 0 0 1px rgba(139, 53, 245, 0.18) !important;
+}
+
+/* PLAN HEADER */
+
+.planTop {
+    display: flex !important;
+    align-items: flex-start !important;
+    justify-content: space-between !important;
+
+    gap: 15px !important;
+
+    margin-bottom: 18px !important;
+}
+
+.planTop h3 {
+    margin: 0 !important;
+
+    color: #eeeeee !important;
+
+    font-size: 15px !important;
+    font-weight: 650 !important;
+}
+
+.planTop p {
+    margin: 5px 0 0 !important;
+
+    color: #888888 !important;
+
+    font-size: 11px !important;
+}
+
+.planTop > strong {
+    color: #eeeeee !important;
+
+    font-size: 15px !important;
+    font-weight: 650 !important;
+
+    white-space: nowrap !important;
+}
+
+.planTop > strong span {
+    color: #888888 !important;
+
+    font-size: 9px !important;
+    font-weight: 400 !important;
+}
+
+/* FEATURES */
+
+.planFeatures {
+    display: flex !important;
+    flex-direction: column !important;
+
+    gap: 10px !important;
+
+    margin: 0 !important;
+}
+
+.planFeatures > div {
+    display: flex !important;
+    align-items: center !important;
+
+    gap: 8px !important;
+
+    color: #c4c4c4 !important;
+
+    font-size: 10px !important;
+    line-height: 15px !important;
+}
+
+.planFeatures i {
+    flex-shrink: 0 !important;
+
+    color: #62d890 !important;
+
+    font-size: 9px !important;
+}
+
+/* PREMIUM ACTIVE */
+
+.premiumActive {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    gap: 6px !important;
+
+    margin-top: auto !important;
+    padding-top: 18px !important;
+
+    color: #63d99a !important;
+
+    font-size: 10px !important;
+    font-weight: 600 !important;
+}
+
+.premiumActive i {
+    color: #63d99a !important;
+}
+
+/* CANCEL PREMIUM */
+
+.cancelPremiumButton {
+    width: 100% !important;
+    height: 38px !important;
+
+    margin-top: 12px !important;
+
+    border: 1px solid #493333 !important;
+    border-radius: 7px !important;
+
+    background: #292121 !important;
+
+    color: #e87575 !important;
+
+    font-size: 11px !important;
+    font-weight: 600 !important;
+
+    cursor: pointer !important;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease !important;
+}
+
+.cancelPremiumButton:hover {
+    background: #332626 !important;
+    border-color: #624040 !important;
+}
+
+/* FOOTER TEXT */
+
+.premiumFooter {
+    margin-top: 14px !important;
+
+    color: #666666 !important;
+
+    font-size: 9px !important;
+
+    text-align: center !important;
+}
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 700px) {
+    .premiumModal {
+        width: calc(100vw - 20px) !important;
+
+        padding: 20px !important;
+
+        border-radius: 15px !important;
+    }
+
+    .premiumPlans {
+        grid-template-columns: 1fr !important;
+    }
+
+    .planCard {
+        min-height: 210px !important;
+    }
+
+    .premiumHeader h2 {
+        font-size: 19px !important;
+    }
+}
+/* =========================================================
+   SIGMAGPT MODALS - FINAL PREMIUM UI
+   ========================================================= */
+
+.modalOverlay {
+    position: fixed !important;
+    inset: 0 !important;
+
+    z-index: 9999 !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    padding: 20px !important;
+    box-sizing: border-box !important;
+
+    background: rgba(0, 0, 0, 0.68) !important;
+
+    backdrop-filter: blur(8px) !important;
+    -webkit-backdrop-filter: blur(8px) !important;
+}
+
+/* =========================================================
+   COMMON MODAL
+   ========================================================= */
+
+.editProfileModal,
+.preferenceModal,
+.premiumModal {
+    position: relative !important;
+
+    width: min(620px, calc(100vw - 40px)) !important;
+    max-height: calc(100vh - 40px) !important;
+
+    overflow: auto !important;
+
+    box-sizing: border-box !important;
+
+    background:
+        linear-gradient(
+            145deg,
+            #202020 0%,
+            #181818 100%
+        ) !important;
+
+    border: 1px solid #303030 !important;
+    border-radius: 18px !important;
+
+    color: #eeeeee !important;
+
+    box-shadow:
+        0 30px 80px rgba(0, 0, 0, 0.55),
+        0 0 0 1px rgba(255, 255, 255, 0.02) !important;
+
+    scrollbar-width: thin;
+    scrollbar-color: #3d3d3d transparent;
+}
+
+.editProfileModal::-webkit-scrollbar,
+.preferenceModal::-webkit-scrollbar,
+.premiumModal::-webkit-scrollbar {
+    width: 5px;
+}
+
+.editProfileModal::-webkit-scrollbar-thumb,
+.preferenceModal::-webkit-scrollbar-thumb,
+.premiumModal::-webkit-scrollbar-thumb {
+    background: #3d3d3d;
+    border-radius: 10px;
+}
+
+/* =========================================================
+   CLOSE BUTTON
+   ========================================================= */
+
+.modalCloseButton {
+    width: 32px !important;
+    height: 32px !important;
+    min-width: 32px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    border: 1px solid #363636 !important;
+    border-radius: 8px !important;
+
+    background: #252525 !important;
+    color: #9b9b9b !important;
+
+    cursor: pointer !important;
+
+    transition: all 0.18s ease !important;
+}
+
+.modalCloseButton:hover {
+    background: #303030 !important;
+    border-color: #484848 !important;
+    color: #ffffff !important;
+
+    transform: translateY(-1px);
+}
+
+/* =========================================================
+   EDIT PROFILE
+   ========================================================= */
+
+.editProfileModal {
+    width: min(500px, calc(100vw - 40px)) !important;
+}
+
+.editProfileHeader,
+.preferenceHeader {
+    display: flex !important;
+    align-items: flex-start !important;
+    justify-content: space-between !important;
+
+    gap: 20px !important;
+
+    padding: 22px 24px !important;
+
+    border-bottom: 1px solid #2b2b2b !important;
+}
+
+.editProfileHeader > div:first-child,
+.preferenceHeader > div:first-child {
+    min-width: 0;
+}
+
+.editProfileHeader h2,
+.preferenceHeader h2 {
+    margin: 0 !important;
+
+    color: #f1f1f1 !important;
+
+    font-size: 20px !important;
+    font-weight: 700 !important;
+
+    letter-spacing: -0.3px !important;
+}
+
+.editProfileHeader p,
+.preferenceHeader p {
+    margin: 6px 0 0 !important;
+
+    color: #858585 !important;
+
+    font-size: 11px !important;
+    line-height: 16px !important;
+}
+
+.editProfileBody {
+    padding: 24px !important;
+}
+
+/* PROFILE AVATAR */
+
+.editProfileAvatar {
+    width: 64px !important;
+    height: 64px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    margin: 0 auto 24px !important;
+
+    border-radius: 50% !important;
+
+    background:
+        linear-gradient(
+            135deg,
+            #1687ff,
+            #7b35ff
+        ) !important;
+
+    color: white !important;
+
+    font-size: 22px !important;
+
+    box-shadow:
+        0 8px 25px rgba(70, 100, 255, 0.25) !important;
+}
+
+/* PROFILE FIELDS */
+
+.profileField {
+    display: flex !important;
+    flex-direction: column !important;
+
+    gap: 7px !important;
+
+    margin-bottom: 17px !important;
+}
+
+.profileField label {
+    color: #cfcfcf !important;
+
+    font-size: 12px !important;
+    font-weight: 600 !important;
+}
+
+.profileField input {
+    width: 100% !important;
+    height: 43px !important;
+
+    box-sizing: border-box !important;
+
+    padding: 0 13px !important;
+
+    border: 1px solid #353535 !important;
+    border-radius: 9px !important;
+
+    outline: none !important;
+
+    background: #222222 !important;
+    color: #eeeeee !important;
+
+    font-family: inherit !important;
+    font-size: 13px !important;
+
+    transition:
+        border-color 0.18s ease,
+        background 0.18s ease !important;
+}
+
+.profileField input:focus {
+    border-color: #6d58e8 !important;
+    background: #252525 !important;
+}
+
+.profileField input:disabled {
+    color: #858585 !important;
+    background: #1e1e1e !important;
+    cursor: not-allowed !important;
+}
+
+.profileField small {
+    color: #686868 !important;
+
+    font-size: 10px !important;
+}
+
+/* PROFILE BUTTONS */
+
+.editProfileActions {
+    display: flex !important;
+    justify-content: flex-end !important;
+
+    gap: 10px !important;
+
+    margin-top: 24px !important;
+}
+
+.cancelProfileButton,
+.saveProfileButton {
+    min-height: 39px !important;
+
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    gap: 7px !important;
+
+    padding: 0 15px !important;
+
+    border-radius: 8px !important;
+
+    font-family: inherit !important;
+    font-size: 11px !important;
+    font-weight: 600 !important;
+
+    cursor: pointer !important;
+
+    transition: all 0.18s ease !important;
+}
+
+.cancelProfileButton {
+    border: 1px solid #383838 !important;
+
+    background: #252525 !important;
+    color: #a5a5a5 !important;
+}
+
+.cancelProfileButton:hover {
+    background: #303030 !important;
+    color: #eeeeee !important;
+}
+
+.saveProfileButton {
+    border: 1px solid transparent !important;
+
+    background:
+        linear-gradient(
+            135deg,
+            #1687ff,
+            #7b35ff
+        ) !important;
+
+    color: #ffffff !important;
+
+    box-shadow:
+        0 5px 18px rgba(70, 100, 255, 0.2) !important;
+}
+
+.saveProfileButton:hover:not(:disabled) {
+    transform: translateY(-1px);
+
+    box-shadow:
+        0 8px 24px rgba(70, 100, 255, 0.3) !important;
+}
+
+.cancelProfileButton:disabled,
+.saveProfileButton:disabled {
+    opacity: 0.55 !important;
+    cursor: not-allowed !important;
+}
+
+/* =========================================================
+   APPEARANCE
+   ========================================================= */
+
+.preferenceModal {
+    width: min(460px, calc(100vw - 40px)) !important;
+}
+
+.preferenceBody {
+    padding: 18px !important;
+
+    display: flex !important;
+    flex-direction: column !important;
+
+    gap: 9px !important;
+}
+
+.themeOption {
+    width: 100% !important;
+    min-height: 64px !important;
+
+    display: flex !important;
+    align-items: center !important;
+
+    gap: 12px !important;
+
+    padding: 11px 12px !important;
+
+    box-sizing: border-box !important;
+
+    border: 1px solid #303030 !important;
+    border-radius: 11px !important;
+
+    background: #212121 !important;
+    color: #eeeeee !important;
+
+    text-align: left !important;
+
+    cursor: pointer !important;
+
+    transition:
+        background 0.18s ease,
+        border-color 0.18s ease,
+        transform 0.18s ease !important;
+}
+
+.themeOption:hover {
+    background: #282828 !important;
+    border-color: #414141 !important;
+    transform: translateY(-1px);
+}
+
+.themeOption.active {
+    border-color: #6754dc !important;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(103, 84, 220, 0.12),
+            rgba(139, 53, 245, 0.06)
+        ) !important;
+}
+
+.themeOptionIcon {
+    width: 40px !important;
+    height: 40px !important;
+    min-width: 40px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    border-radius: 10px !important;
+
+    background: #2d2d2d !important;
+
+    color: #aeb4ff !important;
+
+    font-size: 14px !important;
+}
+
+.themeOption > div:nth-child(2) {
+    flex: 1 !important;
+    min-width: 0 !important;
+
+    display: flex !important;
+    flex-direction: column !important;
+
+    gap: 3px !important;
+}
+
+.themeOption strong {
+    color: #ededed !important;
+
+    font-size: 12px !important;
+    font-weight: 650 !important;
+}
+
+.themeOption span {
+    color: #777777 !important;
+
+    font-size: 10px !important;
+}
+
+.themeOption > i:last-child {
+    flex-shrink: 0 !important;
+
+    color: #6b6b6b !important;
+
+    font-size: 11px !important;
+}
+
+.themeOption.active > i:last-child {
+    color: #7187ff !important;
+}
+
+/* =========================================================
+   PREMIUM
+   ========================================================= */
+
+.premiumModal {
+    width: min(780px, calc(100vw - 40px)) !important;
+
+    padding: 26px !important;
+}
+
+/* Header centered */
+
+.premiumHeader {
+    position: relative !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    padding: 0 45px 22px !important;
+
+    text-align: center !important;
+}
+
+.premiumHeader > div {
+    width: 100% !important;
+}
+
+.premiumHeader h2 {
+    margin: 0 !important;
+
+    color: #f2f2f2 !important;
+
+    font-size: 22px !important;
+    font-weight: 700 !important;
+}
+
+.premiumHeader p {
+    margin: 6px 0 0 !important;
+
+    color: #858585 !important;
+
+    font-size: 11px !important;
+}
+
+.premiumHeader .modalCloseButton {
+    position: absolute !important;
+
+    left: 0 !important;
+    top: 0 !important;
+}
+
+/* PLAN GRID */
+
+.premiumPlans {
+    display: grid !important;
+
+    grid-template-columns: 1fr 1fr !important;
+
+    gap: 14px !important;
+}
+
+/* PLAN */
+
+.planCard {
+    position: relative !important;
+
+    min-height: 270px !important;
+
+    display: flex !important;
+    flex-direction: column !important;
+
+    padding: 20px !important;
+
+    box-sizing: border-box !important;
+
+    border: 1px solid #343434 !important;
+    border-radius: 13px !important;
+
+    background: #242424 !important;
+
+    color: #eeeeee !important;
+
+    text-align: left !important;
+
+    cursor: pointer !important;
+
+    transition:
+        border-color 0.2s ease,
+        background 0.2s ease,
+        transform 0.2s ease !important;
+}
+
+.planCard:hover {
+    background: #282828 !important;
+
+    border-color: #454545 !important;
+
+    transform: translateY(-1px) !important;
+}
+
+.planCard.selected {
+    border-color: #6654d9 !important;
+
+    box-shadow:
+        0 0 0 1px rgba(102, 84, 217, 0.16) !important;
+}
+
+.planTop {
+    display: flex !important;
+    align-items: flex-start !important;
+    justify-content: space-between !important;
+
+    gap: 12px !important;
+
+    margin-bottom: 20px !important;
+}
+
+.planTop h3 {
+    margin: 0 !important;
+
+    color: #eeeeee !important;
+
+    font-size: 15px !important;
+    font-weight: 700 !important;
+}
+
+.planTop p {
+    margin: 5px 0 0 !important;
+
+    color: #777777 !important;
+
+    font-size: 10px !important;
+}
+
+.planTop > strong {
+    color: #f0f0f0 !important;
+
+    font-size: 15px !important;
+
+    white-space: nowrap !important;
+}
+
+.planTop > strong span {
+    color: #777777 !important;
+
+    font-size: 9px !important;
+    font-weight: 400 !important;
+}
+
+.planFeatures {
+    display: flex !important;
+    flex-direction: column !important;
+
+    gap: 11px !important;
+}
+
+.planFeatures > div {
+    display: flex !important;
+    align-items: center !important;
+
+    gap: 8px !important;
+
+    color: #bdbdbd !important;
+
+    font-size: 10px !important;
+}
+
+.planFeatures i {
+    color: #61d892 !important;
+
+    font-size: 9px !important;
+}
+
+.premiumActive {
+    margin-top: auto !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    gap: 6px !important;
+
+    padding-top: 18px !important;
+
+    color: #61d892 !important;
+
+    font-size: 10px !important;
+    font-weight: 600 !important;
+}
+
+.premiumActive i {
+    color: #61d892 !important;
+}
+
+.cancelPremiumButton {
+    width: 100% !important;
+    height: 39px !important;
+
+    margin-top: 12px !important;
+
+    border: 1px solid #493434 !important;
+    border-radius: 8px !important;
+
+    background: #292121 !important;
+
+    color: #e87979 !important;
+
+    font-family: inherit !important;
+    font-size: 11px !important;
+    font-weight: 600 !important;
+
+    cursor: pointer !important;
+}
+
+.cancelPremiumButton:hover {
+    background: #332626 !important;
+    border-color: #624141 !important;
+}
+
+.premiumFooter {
+    margin: 13px 0 0 !important;
+
+    color: #646464 !important;
+
+    font-size: 9px !important;
+
+    text-align: center !important;
+}
+
+/* =========================================================
+   LIGHT THEME
+   ========================================================= */
+
+.lightTheme .editProfileModal,
+.lightTheme .preferenceModal,
+.lightTheme .premiumModal {
+    background: #ffffff !important;
+    border-color: #dddddd !important;
+    color: #222222 !important;
+}
+
+.lightTheme .editProfileHeader,
+.lightTheme .preferenceHeader {
+    border-bottom-color: #e5e5e5 !important;
+}
+
+.lightTheme .editProfileHeader h2,
+.lightTheme .preferenceHeader h2,
+.lightTheme .premiumHeader h2 {
+    color: #222222 !important;
+}
+
+.lightTheme .editProfileHeader p,
+.lightTheme .preferenceHeader p,
+.lightTheme .premiumHeader p {
+    color: #777777 !important;
+}
+
+.lightTheme .profileField label {
+    color: #444444 !important;
+}
+
+.lightTheme .profileField input {
+    background: #f7f7f7 !important;
+    border-color: #dddddd !important;
+    color: #222222 !important;
+}
+
+.lightTheme .profileField input:disabled {
+    background: #eeeeee !important;
+    color: #777777 !important;
+}
+
+.lightTheme .themeOption {
+    background: #f7f7f7 !important;
+    border-color: #dddddd !important;
+    color: #222222 !important;
+}
+
+.lightTheme .themeOption:hover {
+    background: #f0f0f0 !important;
+}
+
+.lightTheme .themeOption strong {
+    color: #222222 !important;
+}
+
+.lightTheme .themeOption span {
+    color: #777777 !important;
+}
+
+.lightTheme .planCard {
+    background: #f7f7f7 !important;
+    border-color: #dddddd !important;
+}
+
+.lightTheme .planCard:hover {
+    background: #f0f0f0 !important;
+}
+
+.lightTheme .planTop h3,
+.lightTheme .planTop > strong {
+    color: #222222 !important;
+}
+
+.lightTheme .planFeatures > div {
+    color: #555555 !important;
+}
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 700px) {
+
+    .modalOverlay {
+        padding: 10px !important;
+    }
+
+    .editProfileModal,
+    .preferenceModal,
+    .premiumModal {
+        width: calc(100vw - 20px) !important;
+
+        max-height: calc(100vh - 20px) !important;
+
+        border-radius: 15px !important;
+    }
+
+    .editProfileHeader,
+    .preferenceHeader {
+        padding: 18px !important;
+    }
+
+    .editProfileBody {
+        padding: 18px !important;
+    }
+
+    .premiumModal {
+        padding: 18px !important;
+    }
+
+    .premiumPlans {
+        grid-template-columns: 1fr !important;
+    }
+
+    .planCard {
+        min-height: 220px !important;
+    }
+
+    .premiumHeader {
+        padding-bottom: 18px !important;
+    }
+
+    .editProfileActions {
+        flex-direction: column-reverse !important;
+    }
+
+    .cancelProfileButton,
+    .saveProfileButton {
+        width: 100% !important;
+    }
+}
+/* =========================================================
+   SIGMAGPT PREMIUM MODAL - FINAL UI
+   ========================================================= */
+
+.premiumOverlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 24px;
+
+    background:
+        radial-gradient(
+            circle at 50% 15%,
+            rgba(139, 53, 245, 0.12),
+            transparent 42%
+        ),
+        rgba(0, 0, 0, 0.72);
+
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+
+    animation: premiumOverlayIn 0.2s ease;
+}
+
+
+/* =========================================================
+   MAIN MODAL
+   ========================================================= */
+
+.premiumOverlay .premiumModal {
+    position: relative;
+
+    width: min(820px, 100%);
+
+    max-height: calc(100vh - 48px);
+
+    overflow-y: auto;
+
+    padding: 34px 34px 24px;
+
+    box-sizing: border-box;
+
+    border: 1px solid rgba(255, 255, 255, 0.08);
+
+    border-radius: 20px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #202020 0%,
+            #191919 100%
+        );
+
+    color: #ffffff;
+
+    box-shadow:
+        0 30px 80px rgba(0, 0, 0, 0.55),
+        0 0 0 1px rgba(139, 53, 245, 0.04);
+
+    animation: premiumModalIn 0.25s ease;
+}
+
+
+/* Scrollbar */
+
+.premiumOverlay .premiumModal::-webkit-scrollbar {
+    width: 6px;
+}
+
+.premiumOverlay .premiumModal::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.premiumOverlay .premiumModal::-webkit-scrollbar-thumb {
+    background: #3b3b3b;
+    border-radius: 10px;
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.premiumHero {
+    position: relative;
+
+    text-align: center;
+
+    margin-bottom: 28px;
+}
+
+
+.premiumCloseButton {
+    position: absolute;
+
+    top: -8px;
+    right: -8px;
+
+    width: 32px;
+    height: 32px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: none;
+    border-radius: 8px;
+
+    background: transparent;
+
+    color: #8d8d8d;
+
+    cursor: pointer;
+
+    font-size: 16px;
+
+    transition: 0.2s ease;
+}
+
+.premiumCloseButton:hover {
+    color: #ffffff;
+
+    background: rgba(255, 255, 255, 0.08);
+}
+
+
+/* Crown */
+
+.premiumCrown {
+    width: 72px;
+    height: 32px;
+
+    margin: 0 auto 16px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 18px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #7b2ff7,
+            #a348ff
+        );
+
+    box-shadow:
+        0 8px 25px rgba(139, 53, 245, 0.30);
+}
+
+.premiumCrown i {
+    color: #ffffff;
+
+    font-size: 19px;
+}
+
+
+.premiumHero h2 {
+    margin: 0;
+
+    color: #ffffff;
+
+    font-size: 30px;
+    line-height: 1.15;
+
+    font-weight: 700;
+
+    letter-spacing: -0.6px;
+}
+
+
+.premiumHero p {
+    margin: 8px 0 0;
+
+    color: #9a9a9a;
+
+    font-size: 14px;
+}
+
+
+/* =========================================================
+   PLANS
+   ========================================================= */
+
+.premiumPlans {
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 14px;
+
+    align-items: stretch;
+}
+
+
+/* =========================================================
+   CARD
+   ========================================================= */
+
+.premiumPlanCard {
+    position: relative;
+
+    min-height: 365px;
+
+    padding: 26px 22px 22px;
+
+    box-sizing: border-box;
+
+    display: flex;
+    flex-direction: column;
+
+    border-radius: 16px;
+
+    border: 1px solid #3a3a3a;
+
+    background: #252525;
+
+    transition:
+        border-color 0.2s ease,
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+.premiumPlanCard:hover {
+    transform: translateY(-2px);
+}
+
+
+/* Free current plan */
+
+.freePlanCard.currentPlan {
+    border-color: #873cff;
+
+    box-shadow:
+        0 0 0 1px rgba(135, 60, 255, 0.14);
+}
+
+
+/* Premium */
+
+.premiumPlanCard.premiumPlan {
+    background:
+        linear-gradient(
+            145deg,
+            #2a2631,
+            #25222d
+        );
+
+    border-color: rgba(139, 53, 245, 0.55);
+}
+
+
+.premiumPlanCard.activePremiumPlan {
+    border-color: #873cff;
+
+    box-shadow:
+        0 0 0 1px rgba(135, 60, 255, 0.20),
+        0 12px 35px rgba(139, 53, 245, 0.10);
+}
+
+
+/* =========================================================
+   BADGES
+   ========================================================= */
+
+.currentPlanBadge,
+.mostPopularBadge {
+    position: absolute;
+
+    top: -11px;
+
+    height: 22px;
+
+    padding: 0 11px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 999px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #873cff,
+            #a34cff
+        );
+
+    color: #ffffff;
+
+    font-size: 9px;
+
+    font-weight: 800;
+
+    letter-spacing: 0.5px;
+
+    white-space: nowrap;
+}
+
+
+.currentPlanBadge {
+    right: 22px;
+}
+
+
+.mostPopularBadge {
+    right: 18px;
+}
+
+
+/* =========================================================
+   PLAN HEADER
+   ========================================================= */
+
+.premiumPlanCard .planHeader {
+    display: flex;
+
+    align-items: flex-start;
+    justify-content: space-between;
+
+    gap: 12px;
+
+    margin-bottom: 12px;
+}
+
+
+.premiumPlanCard .planHeader h3 {
+    margin: 0;
+
+    color: #ffffff;
+
+    font-size: 20px;
+
+    line-height: 1.2;
+
+    font-weight: 700;
+}
+
+
+.premiumPlanCard .planHeader p {
+    margin: 5px 0 0;
+
+    color: #858585;
+
+    font-size: 12px;
+}
+
+
+.currentPlanTag {
+    padding: 5px 9px;
+
+    border-radius: 6px;
+
+    background: #333333;
+
+    color: #858585;
+
+    font-size: 10px;
+
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   PRICE
+   ========================================================= */
+
+.premiumPlanCard .planPrice {
+    margin: 2px 0 24px;
+
+    color: #ffffff;
+
+    font-size: 30px;
+
+    line-height: 1;
+
+    font-weight: 700;
+
+    letter-spacing: -0.8px;
+}
+
+
+.premiumPlanCard .planPrice span {
+    margin-left: 2px;
+
+    color: #8b8b8b;
+
+    font-size: 11px;
+
+    font-weight: 400;
+
+    letter-spacing: 0;
+}
+
+
+.premiumPlanCard .premiumPrice {
+    font-size: 31px;
+}
+
+
+/* =========================================================
+   FEATURES
+   ========================================================= */
+
+.premiumPlanCard .planFeatureList {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 13px;
+}
+
+
+.premiumPlanCard .planFeature {
+    display: flex;
+
+    align-items: center;
+
+    gap: 11px;
+
+    color: #a6a6a6;
+
+    font-size: 12px;
+
+    line-height: 1.3;
+}
+
+
+.premiumPlanCard .planFeature i {
+    width: 10px;
+
+    color: #52d889;
+
+    font-size: 10px;
+
+    flex-shrink: 0;
+}
+
+
+/* =========================================================
+   FREE USAGE
+   ========================================================= */
+
+.premiumUsageCard {
+    margin-top: auto;
+
+    padding: 14px;
+
+    border-radius: 12px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(139, 53, 245, 0.12),
+            rgba(139, 53, 245, 0.07)
+        );
+
+    border: 1px solid rgba(139, 53, 245, 0.18);
+}
+
+
+.usageTopRow {
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    margin-bottom: 10px;
+}
+
+
+.usageTopRow span {
+    color: #9b9b9b;
+
+    font-size: 12px;
+}
+
+
+.usageTopRow strong {
+    color: #ffffff;
+
+    font-size: 12px;
+}
+
+
+.premiumUsageBar {
+    width: 100%;
+
+    height: 6px;
+
+    overflow: hidden;
+
+    border-radius: 999px;
+
+    background: #3a3541;
+}
+
+
+.premiumUsageProgress {
+    height: 100%;
+
+    min-width: 2px;
+
+    border-radius: inherit;
+
+    background:
+        linear-gradient(
+            90deg,
+            #8d3cff,
+            #b45cff
+        );
+
+    transition: width 0.3s ease;
+}
+
+
+.usageRemaining {
+    margin-top: 8px;
+
+    color: #8e8e8e;
+
+    font-size: 11px;
+}
+
+
+/* =========================================================
+   UPGRADE BUTTON
+   ========================================================= */
+
+.premiumUpgradeButton {
+    width: 100%;
+
+    min-height: 46px;
+
+    margin-top: auto;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 8px;
+
+    border: none;
+
+    border-radius: 9px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #873cff,
+            #a348ff
+        );
+
+    color: #ffffff;
+
+    font-size: 13px;
+
+    font-weight: 700;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 8px 22px rgba(139, 53, 245, 0.22);
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        filter 0.2s ease;
+}
+
+
+.premiumUpgradeButton:hover:not(:disabled) {
+    transform: translateY(-1px);
+
+    filter: brightness(1.08);
+
+    box-shadow:
+        0 12px 28px rgba(139, 53, 245, 0.30);
+}
+
+
+.premiumUpgradeButton:disabled {
+    opacity: 0.6;
+
+    cursor: not-allowed;
+}
+
+
+.premiumUpgradeButton i {
+    font-size: 13px;
+}
+
+
+.premiumUpgradeButton span {
+    margin-left: 4px;
+
+    opacity: 0.75;
+
+    font-size: 11px;
+
+    font-weight: 500;
+}
+
+
+/* =========================================================
+   PREMIUM ACTIVE
+   ========================================================= */
+
+.premiumActiveState {
+    min-height: 46px;
+
+    margin-top: auto;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 7px;
+
+    border-radius: 9px;
+
+    background: rgba(82, 216, 137, 0.08);
+
+    border: 1px solid rgba(82, 216, 137, 0.15);
+
+    color: #55d88b;
+
+    font-size: 12px;
+
+    font-weight: 600;
+}
+
+
+.premiumActiveState i {
+    font-size: 13px;
+}
+
+
+/* =========================================================
+   DOWNGRADE
+   ========================================================= */
+
+.downgradeButton {
+    width: 100%;
+
+    min-height: 42px;
+
+    margin-top: auto;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 7px;
+
+    border: 1px solid rgba(255, 95, 95, 0.32);
+
+    border-radius: 9px;
+
+    background: rgba(255, 75, 75, 0.07);
+
+    color: #ff7777;
+
+    font-size: 12px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: 0.2s ease;
+}
+
+
+.downgradeButton:hover:not(:disabled) {
+    background: rgba(255, 75, 75, 0.13);
+
+    border-color: rgba(255, 95, 95, 0.50);
+}
+
+
+.downgradeButton:disabled {
+    opacity: 0.6;
+
+    cursor: not-allowed;
+}
+
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
+.premiumModalFooter {
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 7px;
+
+    margin-top: 18px;
+
+    color: #777777;
+
+    font-size: 11px;
+
+    text-align: center;
+}
+
+
+.premiumModalFooter i {
+    color: #7e7e7e;
+
+    font-size: 10px;
+}
+
+
+.premiumModalFooter span {
+    color: #555555;
+}
+
+
+/* =========================================================
+   ANIMATION
+   ========================================================= */
+
+@keyframes premiumOverlayIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+
+@keyframes premiumModalIn {
+    from {
+        opacity: 0;
+        transform: translateY(12px) scale(0.98);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+
+/* =========================================================
+   LIGHT MODE
+   ========================================================= */
+
+.lightTheme .premiumOverlay .premiumModal {
+    background:
+        linear-gradient(
+            145deg,
+            #ffffff,
+            #f7f7f9
+        );
+
+    border-color: #e4e4e7;
+
+    color: #18181b;
+}
+
+
+.lightTheme .premiumHero h2,
+.lightTheme .premiumPlanCard .planHeader h3,
+.lightTheme .premiumPlanCard .planPrice {
+    color: #18181b;
+}
+
+
+.lightTheme .premiumHero p,
+.lightTheme .premiumPlanCard .planHeader p,
+.lightTheme .premiumPlanCard .planFeature,
+.lightTheme .usageTopRow span,
+.lightTheme .usageRemaining {
+    color: #71717a;
+}
+
+
+.lightTheme .premiumPlanCard {
+    background: #ffffff;
+
+    border-color: #dedee3;
+}
+
+
+.lightTheme .premiumPlanCard.premiumPlan {
+    background:
+        linear-gradient(
+            145deg,
+            #ffffff,
+            #faf7ff
+        );
+
+    border-color: rgba(139, 53, 245, 0.40);
+}
+
+
+.lightTheme .currentPlanTag {
+    background: #eeeeef;
+
+    color: #71717a;
+}
+
+
+.lightTheme .premiumUsageCard {
+    background: #f7f1ff;
+
+    border-color: #eadcff;
+}
+
+
+.lightTheme .premiumUsageBar {
+    background: #ded9e5;
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 700px) {
+
+    .premiumOverlay {
+        padding: 14px;
+    }
+
+
+    .premiumOverlay .premiumModal {
+        padding: 28px 16px 18px;
+
+        max-height: calc(100vh - 28px);
+
+        border-radius: 17px;
+    }
+
+
+    .premiumHero {
+        margin-bottom: 24px;
+    }
+
+
+    .premiumHero h2 {
+        font-size: 24px;
+    }
+
+
+    .premiumHero p {
+        font-size: 12px;
+    }
+
+
+    .premiumPlans {
+        grid-template-columns: 1fr;
+
+        gap: 18px;
+    }
+
+
+    .premiumPlanCard {
+        min-height: 0;
+
+        padding: 24px 18px 18px;
+    }
+
+
+    .premiumPlanCard .planPrice {
+        margin-bottom: 20px;
+    }
+
+
+    .premiumPlanCard .planFeatureList {
+        gap: 11px;
+    }
+
+
+    .premiumUsageCard {
+        margin-top: 24px;
+    }
+
+
+    .premiumUpgradeButton,
+    .premiumActiveState,
+    .downgradeButton {
+        margin-top: 24px;
+    }
+
+
+    .premiumModalFooter {
+        line-height: 1.5;
+
+        flex-wrap: wrap;
+    }
+}
+
+
+@media (max-width: 400px) {
+
+    .premiumHero h2 {
+        font-size: 22px;
+    }
+
+
+    .premiumPlanCard {
+        padding: 22px 15px 16px;
+    }
+
+
+    .premiumPlanCard .planPrice {
+        font-size: 27px;
+    }
+
+
+    .premiumPlanCard .planFeature {
+        font-size: 11px;
+    }
+}

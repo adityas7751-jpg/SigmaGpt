@@ -3,7 +3,9 @@ import jwt from "jsonwebtoken";
 
 import Thread from "../models/Thread.js";
 import User from "../models/User.js";
-import getOpenAIAPIResponse from "../utils/openai.js";
+import getOpenAIAPIResponse, {
+    streamOpenAIAPIResponse
+} from "../utils/openai.js";
 
 const router = express.Router();
 
@@ -64,20 +66,24 @@ const getAuthenticatedUser = async (req) => {
 // =========================
 
 const createChatTitle = (message) => {
-    const cleanedMessage = message
-        .trim()
-        .replace(/\s+/g, " ");
+
+    const cleanedMessage =
+        message
+            .trim()
+            .replace(/\s+/g, " ");
 
     if (!cleanedMessage) {
         return "New Chat";
     }
 
-    const cleanText = cleanedMessage.replace(
-        /^[\s.,!?]+|[\s.,!?]+$/g,
-        ""
-    );
+    const cleanText =
+        cleanedMessage.replace(
+            /^[\s.,!?]+|[\s.,!?]+$/g,
+            ""
+        );
 
-    const words = cleanText.split(" ");
+    const words =
+        cleanText.split(" ");
 
     let title =
         words
@@ -89,6 +95,7 @@ const createChatTitle = (message) => {
     }
 
     if (title.length > 45) {
+
         title =
             title
                 .substring(0, 45)
@@ -98,6 +105,7 @@ const createChatTitle = (message) => {
             title.lastIndexOf(" ");
 
         if (lastSpace > 20) {
+
             title =
                 title.substring(
                     0,
@@ -120,11 +128,14 @@ const createChatTitle = (message) => {
 // =========================
 
 router.post("/test", async (req, res) => {
+
     try {
-        const thread = new Thread({
-            threadId: "abc",
-            title: "Testing New Thread2"
-        });
+
+        const thread =
+            new Thread({
+                threadId: "abc",
+                title: "Testing New Thread2"
+            });
 
         const response =
             await thread.save();
@@ -132,6 +143,7 @@ router.post("/test", async (req, res) => {
         return res.send(response);
 
     } catch (err) {
+
         console.log(err);
 
         return res.status(500).json({
@@ -145,7 +157,9 @@ router.post("/test", async (req, res) => {
 // =========================
 
 router.get("/thread", async (req, res) => {
+
     try {
+
         const threads =
             await Thread.find({})
                 .sort({
@@ -155,6 +169,7 @@ router.get("/thread", async (req, res) => {
         return res.json(threads);
 
     } catch (err) {
+
         console.log(err);
 
         return res.status(500).json({
@@ -170,17 +185,20 @@ router.get("/thread", async (req, res) => {
 router.get(
     "/thread/:threadId",
     async (req, res) => {
+
         const {
             threadId
         } = req.params;
 
         try {
+
             const thread =
                 await Thread.findOne({
                     threadId
                 });
 
             if (!thread) {
+
                 return res.status(404).json({
                     error:
                         "Thread not found"
@@ -192,6 +210,7 @@ router.get(
             );
 
         } catch (err) {
+
             console.log(err);
 
             return res.status(500).json({
@@ -209,17 +228,20 @@ router.get(
 router.delete(
     "/thread/:threadId",
     async (req, res) => {
+
         const {
             threadId
         } = req.params;
 
         try {
+
             const deletedThread =
                 await Thread.findOneAndDelete({
                     threadId
                 });
 
             if (!deletedThread) {
+
                 return res.status(404).json({
                     error:
                         "Thread not found"
@@ -232,6 +254,7 @@ router.delete(
             });
 
         } catch (err) {
+
             console.log(err);
 
             return res.status(500).json({
@@ -249,6 +272,7 @@ router.delete(
 router.put(
     "/thread/:threadId",
     async (req, res) => {
+
         const {
             threadId
         } = req.params;
@@ -258,6 +282,7 @@ router.put(
         } = req.body;
 
         if (!title || !title.trim()) {
+
             return res.status(400).json({
                 error:
                     "Title is required"
@@ -265,12 +290,14 @@ router.put(
         }
 
         try {
+
             const thread =
                 await Thread.findOne({
                     threadId
                 });
 
             if (!thread) {
+
                 return res.status(404).json({
                     error:
                         "Thread not found"
@@ -291,6 +318,7 @@ router.put(
             });
 
         } catch (err) {
+
             console.log(
                 "Rename thread error:",
                 err
@@ -305,7 +333,7 @@ router.put(
 );
 
 // =========================
-// Chat
+// NORMAL CHAT
 // =========================
 
 router.post(
@@ -322,6 +350,7 @@ router.post(
             !message ||
             !message.trim()
         ) {
+
             return res.status(400).json({
                 error:
                     "Missing required fields"
@@ -511,9 +540,12 @@ router.post(
                         remaining: null
                     }
                     : {
-                        used: currentUsage,
+                        used:
+                            currentUsage,
+
                         limit:
                             FREE_DAILY_LIMIT,
+
                         remaining:
                             Math.max(
                                 FREE_DAILY_LIMIT -
@@ -552,6 +584,401 @@ router.post(
                     err.message ||
                     "Something went wrong"
             });
+        }
+    }
+);
+
+// =========================
+// STREAMING CHAT
+// =========================
+
+router.post(
+    "/chat/stream",
+    async (req, res) => {
+
+        const {
+            threadId,
+            message
+        } = req.body;
+
+        if (
+            !threadId ||
+            !message ||
+            !message.trim()
+        ) {
+
+            return res.status(400).json({
+                error:
+                    "Missing required fields"
+            });
+        }
+
+        try {
+
+            // =========================
+            // Get Logged-in User
+            // =========================
+
+            const user =
+                await getAuthenticatedUser(
+                    req
+                );
+
+            // =========================
+            // Premium / Free Check
+            // =========================
+
+            let currentUsage = 0;
+            let today = null;
+            let trackerKey = null;
+
+            if (user) {
+
+                const isPremium =
+                    user.plan === "premium";
+
+                if (!isPremium) {
+
+                    today =
+                        new Date()
+                            .toISOString()
+                            .split("T")[0];
+
+                    trackerKey =
+                        `${user._id}_${today}`;
+
+                    currentUsage =
+                        usageTracker.get(
+                            trackerKey
+                        ) || 0;
+
+                    // =========================
+                    // LIMIT REACHED
+                    // =========================
+
+                    if (
+                        currentUsage >=
+                        FREE_DAILY_LIMIT
+                    ) {
+
+                        return res.status(403).json({
+
+                            error:
+                                "You have reached your daily Free plan AI limit.",
+
+                            limitReached:
+                                true,
+
+                            plan:
+                                "free",
+
+                            dailyLimit:
+                                FREE_DAILY_LIMIT,
+
+                            used:
+                                currentUsage,
+
+                            remaining:
+                                0,
+
+                            message:
+                                "Upgrade to Premium for unlimited AI usage."
+                        });
+                    }
+
+                    // =========================
+                    // INCREMENT USAGE
+                    // =========================
+
+                    currentUsage += 1;
+
+                    usageTracker.set(
+                        trackerKey,
+                        currentUsage
+                    );
+                }
+            }
+
+            // =========================
+            // Find Existing Thread
+            // =========================
+
+            let thread =
+                await Thread.findOne({
+                    threadId
+                });
+
+            // =========================
+            // Create New Thread
+            // =========================
+
+            if (!thread) {
+
+                const chatTitle =
+                    createChatTitle(
+                        message
+                    );
+
+                thread =
+                    new Thread({
+
+                        threadId,
+
+                        title:
+                            chatTitle,
+
+                        messages: [
+                            {
+                                role:
+                                    "user",
+
+                                content:
+                                    message.trim()
+                            }
+                        ]
+                    });
+
+            } else {
+
+                thread.messages.push({
+
+                    role:
+                        "user",
+
+                    content:
+                        message.trim()
+                });
+            }
+
+            // =========================
+            // SSE HEADERS
+            // =========================
+
+            res.status(200);
+
+            res.setHeader(
+                "Content-Type",
+                "text/event-stream"
+            );
+
+            res.setHeader(
+                "Cache-Control",
+                "no-cache, no-transform"
+            );
+
+            res.setHeader(
+                "Connection",
+                "keep-alive"
+            );
+
+            res.setHeader(
+                "X-Accel-Buffering",
+                "no"
+            );
+
+            if (typeof res.flushHeaders === "function") {
+                res.flushHeaders();
+            }
+
+            // =========================
+            // Keep Connection Alive
+            // =========================
+
+            const keepAlive =
+                setInterval(() => {
+
+                    if (!res.writableEnded) {
+                        res.write(": ping\n\n");
+                    }
+
+                }, 15000);
+
+            let assistantReply = "";
+
+            // =========================
+            // Send Helper
+            // =========================
+
+            const sendEvent = (
+                event,
+                data
+            ) => {
+
+                if (res.writableEnded) {
+                    return;
+                }
+
+                res.write(
+                    `event: ${event}\n`
+                );
+
+                res.write(
+                    `data: ${JSON.stringify(data)}\n\n`
+                );
+            };
+
+            // =========================
+            // Start Streaming
+            // =========================
+
+            sendEvent(
+                "start",
+                {
+                    plan:
+                        user
+                            ? user.plan
+                            : "free"
+                }
+            );
+
+            // =========================
+            // Gemini Stream
+            // =========================
+
+            await streamOpenAIAPIResponse(
+                thread.messages,
+                (chunk) => {
+
+                    assistantReply += chunk;
+
+                    sendEvent(
+                        "chunk",
+                        {
+                            text: chunk
+                        }
+                    );
+                }
+            );
+
+            // =========================
+            // Validate Response
+            // =========================
+
+            if (!assistantReply.trim()) {
+
+                throw new Error(
+                    "AI returned an empty response."
+                );
+            }
+
+            // =========================
+            // Save Assistant Response
+            // =========================
+
+            thread.messages.push({
+
+                role:
+                    "assistant",
+
+                content:
+                    assistantReply
+            });
+
+            thread.updatedAt =
+                new Date();
+
+            await thread.save();
+
+            // =========================
+            // Usage Information
+            // =========================
+
+            const isPremium =
+                user?.plan === "premium";
+
+            const usage =
+                isPremium
+                    ? {
+                        used: null,
+                        limit: null,
+                        remaining: null
+                    }
+                    : {
+                        used:
+                            currentUsage,
+
+                        limit:
+                            FREE_DAILY_LIMIT,
+
+                        remaining:
+                            Math.max(
+                                FREE_DAILY_LIMIT -
+                                currentUsage,
+                                0
+                            )
+                    };
+
+            // =========================
+            // Stream Complete
+            // =========================
+
+            sendEvent(
+                "done",
+                {
+                    plan:
+                        user
+                            ? user.plan
+                            : "free",
+
+                    usage,
+
+                    reply:
+                        assistantReply
+                }
+            );
+
+            clearInterval(
+                keepAlive
+            );
+
+            if (!res.writableEnded) {
+                res.end();
+            }
+
+        } catch (err) {
+
+            console.log(
+                "Streaming chat error:",
+                err
+            );
+
+            // =========================
+            // Send Error To Frontend
+            // =========================
+
+            try {
+
+                if (!res.headersSent) {
+
+                    return res.status(500).json({
+                        error:
+                            err.message ||
+                            "Something went wrong"
+                    });
+
+                }
+
+                res.write(
+                    `event: error\n`
+                );
+
+                res.write(
+                    `data: ${JSON.stringify({
+                        error:
+                            err.message ||
+                            "Something went wrong"
+                    })}\n\n`
+                );
+
+                res.end();
+
+            } catch (streamError) {
+
+                console.log(
+                    "Stream close error:",
+                    streamError
+                );
+            }
         }
     }
 );
