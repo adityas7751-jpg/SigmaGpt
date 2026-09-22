@@ -8056,3 +8056,159 @@ body,
         font-size: 18px !important;
     }
 }
+/* =========================================
+   FINAL MOBILE SIDEBAR + CHAT WIDTH FIX
+========================================= */
+
+@media (max-width: 768px) {
+
+    /* Sidebar must not reserve 280px space */
+    .sidebar {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+
+        width: 280px !important;
+        max-width: 82vw !important;
+
+        height: 100vh !important;
+
+        flex: none !important;
+        flex-shrink: 0 !important;
+
+        transform: translateX(-100%) !important;
+
+        z-index: 2000 !important;
+    }
+
+    .sidebar.sidebarOpen {
+        transform: translateX(0) !important;
+    }
+
+
+    /* Main chat must use complete mobile width */
+    .chatWindow {
+        width: 100vw !important;
+        max-width: 100vw !important;
+
+        min-width: 0 !important;
+
+        margin: 0 !important;
+        padding: 0 !important;
+
+        box-sizing: border-box !important;
+
+        overflow-x: hidden !important;
+    }
+
+
+    /* Chat content full width */
+    .chats {
+        width: 100% !important;
+        max-width: 100% !important;
+
+        margin: 0 !important;
+
+        padding-left: 10px !important;
+        padding-right: 10px !important;
+
+        box-sizing: border-box !important;
+    }
+
+
+    .sigmaWelcome {
+        width: 100% !important;
+        max-width: 100% !important;
+
+        margin: 0 auto !important;
+
+        padding-left: 10px !important;
+        padding-right: 10px !important;
+
+        box-sizing: border-box !important;
+    }
+
+
+    /* Feature cards */
+    .sigmaFeatures {
+        width: 100% !important;
+        max-width: 100% !important;
+
+        display: grid !important;
+
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr)) !important;
+
+        gap: 10px !important;
+
+        box-sizing: border-box !important;
+    }
+
+
+    .sigmaFeatureCard {
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+
+        box-sizing: border-box !important;
+
+        overflow: hidden !important;
+    }
+
+
+    .sigmaFeatureCard h3,
+    .sigmaFeatureCard p {
+        white-space: normal !important;
+        word-break: normal !important;
+        overflow-wrap: break-word !important;
+    }
+}
+
+
+/* =========================================
+   SMALL PHONES
+========================================= */
+
+@media (max-width: 480px) {
+
+    .chatWindow {
+        width: 100vw !important;
+        max-width: 100vw !important;
+    }
+
+    .chats {
+        width: 100% !important;
+        padding-left: 8px !important;
+        padding-right: 8px !important;
+    }
+
+    .sigmaWelcome {
+        width: 100% !important;
+        padding-left: 8px !important;
+        padding-right: 8px !important;
+    }
+
+    .sigmaFeatures {
+        width: 100% !important;
+
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr)) !important;
+
+        gap: 8px !important;
+    }
+
+    .sigmaFeatureCard {
+        min-height: 120px !important;
+        padding: 12px 7px !important;
+    }
+
+    .sigmaFeatureCard h3 {
+        font-size: 13px !important;
+        line-height: 17px !important;
+    }
+
+    .sigmaFeatureCard p {
+        font-size: 9px !important;
+        line-height: 13px !important;
+    }
+}
